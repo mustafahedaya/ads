@@ -2,7 +2,7 @@
   {
     "id": 1,
     "platform": "amazon",
-    "image_url": "https://raw.githubusercontent.com/mustafahedaya/ads/refs/heads/main/image.png",
+    "image_url": "https://raw.githubusercontent.com/mustafahedaya/ads/refs/heads/main/image11.png",
     "target_url": "https://affiliate-program.amazon.com/home",
     "alt_text_ar": "صوت نقي! سماعات عازلة للضوضاء لمشاهدة جماعية مثالية.",
     "alt_text_en": "Pure sound! Noise-cancelling headphones for the perfect watch party.",
@@ -20,7 +20,7 @@
   {
     "id": 3,
     "platform": "amazon",
-    "image_url": "https://raw.githubusercontent.com/mustafahedaya/ads/refs/heads/main/image.png",
+    "image_url": "https://raw.githubusercontent.com/mustafahedaya/ads/refs/heads/main/image11.png",
     "target_url": "http://www.youtube.com/",
     "alt_text_ar": "تجربة مشاهدة فائقة الجودة على شاشتك الذكية.",
     "alt_text_en": "Upgrade your watch party experience with a new streaming device.",
