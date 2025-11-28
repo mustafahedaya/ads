@@ -2,8 +2,8 @@
   {
     "id": 1, 
     "platform": "amazon", 
-    "image_url": "https://raw.githubusercontent.com/mustafaelmaya/ads/main/ad_img_1.jpg", 
-    "target_url": "YOUR_AMAZON_AFFILIATE_LINK_HERE_syncplay-20", 
+    "image_url": "https://adspecs.yahooinc.com/_next/image?url=https%3A%2F%2Fs.yimg.com%2Fcv%2Fapiv2%2Fadspecs%2Ffeature%2FdesignRequirementAssets%2F48%2Fdisplay-AppInstall_Unbranded_1630616394016.jpg&w=3840&q=75", 
+    "target_url": "https://affiliate-program.amazon.com/home", 
     "alt_text_ar": "أفضل سماعات لمشاهدة الأفلام الجماعية",
     "alt_text_en": "Best headphones for your watch party experience",
     "is_active": true
