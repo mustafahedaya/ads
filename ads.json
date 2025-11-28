@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1, 
+    "platform": "amazon", 
+    "image_url": "https://raw.githubusercontent.com/mustafaelmaya/ads/main/ad_img_1.jpg", 
+    "target_url": "YOUR_AMAZON_AFFILIATE_LINK_HERE_syncplay-20", 
+    "alt_text_ar": "أفضل سماعات لمشاهدة الأفلام الجماعية",
+    "alt_text_en": "Best headphones for your watch party experience",
+    "is_active": true
+  }
+]
