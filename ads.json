@@ -21,7 +21,7 @@
     "id": 3,
     "platform": "amazon",
     "image_url": "https://raw.githubusercontent.com/mustafahedaya/ads/refs/heads/main/image.png",
-    "target_url": "http://www.google.com.eg/",
+    "target_url": "https://translate.google.com/",
     "alt_text_ar": "تجربة مشاهدة فائقة الجودة على شاشتك الذكية.",
     "alt_text_en": "Upgrade your watch party experience with a new streaming device.",
     "is_active": true
