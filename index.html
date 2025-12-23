@@ -9,16 +9,20 @@
         body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 80px; font-family: 'Segoe UI', sans-serif; }
         .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 450px; background: rgba(0,230,118,0.05); transition: 0.5s; }
         .error-mode { border-color: #ff5252 !important; background: rgba(255,82,82,0.05) !important; }
+        
+        /* تصميم الزر */
         #unlockLink { 
             display: inline-block; padding: 18px 45px; font-size: 20px; background: #00e676; 
             text-decoration: none; border-radius: 50px; font-weight: bold; color: #000; 
             transition: 0.3s; pointer-events: none; opacity: 0.1;
         }
-        .active-btn { pointer-events: auto !important; opacity: 1 !important; transform: scale(1.1); box-shadow: 0 0 20px #00e676; }
+        /* الحالة النشطة للزر بعد فحص الـ AdBlock */
+        .active-btn { pointer-events: auto !important; opacity: 1 !important; transform: scale(1.1); box-shadow: 0 0 20px #00e676; cursor: pointer; }
+        
         #msg { margin-top: 20px; font-weight: bold; line-height: 1.6; }
         .shaking { animation: shake 0.5s; }
         
-        /* Style for the new English instructions */
+        /* إرشادات اللغة الإنجليزية */
         .instructions { 
             font-size: 13px; color: #ccc; margin-top: 15px; 
             padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
@@ -59,12 +63,14 @@
         async function advancedDetection() {
             let isAdBlockActive = false;
 
+            // الفحص الأول: فحص وجود عنصر الإعلان الوهمي
             if (window.getComputedStyle(adTrap).display === 'none' || 
                 window.getComputedStyle(adTrap).visibility === 'hidden' ||
                 adTrap.offsetHeight === 0) {
                 isAdBlockActive = true;
             }
 
+            // الفحص الثاني: محاولة استدعاء سكريبت إعلاني خارجي
             if (!isAdBlockActive) {
                 try {
                     await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
@@ -85,7 +91,7 @@
             msg.style.color = "#ff5252";
             msg.innerHTML = "⚠️ AdBlock or Protection Detected!";
             
-            // New instructions in English
+            // رسالة التعليمات بالإنجليزية
             extraInstructions.innerHTML = `
                 <div class="instructions">
                     If you have already disabled AdBlock and still see this:<br>
@@ -106,6 +112,7 @@
         }
 
         function startCountdown() {
+            // يتم استدعاء هذه الدالة فقط عند الضغط الفعلي على الزر
             unlockLink.style.display = 'none';
             extraInstructions.innerHTML = "";
             msg.innerText = "Ad opened. Verifying support... (10s)";
@@ -123,6 +130,7 @@
             }, 1000);
         }
 
+        // تشغيل الفحص التلقائي عند تحميل الصفحة
         window.onload = () => setTimeout(advancedDetection, 1200);
     </script>
 </body>
