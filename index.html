@@ -2,48 +2,48 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Reward System</title>
+    <title>SyncPlay Reward</title>
     <!-- كود الإعلان الخاص بك -->
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
 </head>
 <body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
 
-    <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; position:relative; z-index:1;">
-        <h2 style="color:#00e676;">Verified User Access</h2>
-        <p>1. Ensure your browser allows pop-ups.</p>
-        <p>2. <b>Click anywhere inside this screen.</b></p>
-        <div id="status" style="margin-top:20px; color:#aaa; font-style:italic;">Waiting for click...</div>
+    <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block;">
+        <h2 style="color:#00e676;">Reward Verification</h2>
+        <p>1. Ad will pop up shortly.<br>2. Wait for the automatic return.</p>
+        <div id="status" style="background:#333; padding:15px; border-radius:10px; color:#00e676; font-weight:bold;">
+            READY: CLICK ANYWHERE TO START
+        </div>
     </div>
 
-    <!-- طبقة تغطي الشاشة بالكامل لالتقاط الضغطة بقوة -->
+    <!-- طبقة شفافة لالتقاط الضغطة -->
     <div id="trigger" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
 
     <script>
-        // استخدام تقنية Capture لضمان تنفيذ الكود قبل أي خطأ آخر
-        window.addEventListener('mousedown', function() {
-            console.log("Interaction detected! Preparing redirect...");
-            document.getElementById('status').innerText = "Processing... Ad should open now.";
-            document.getElementById('status').style.color = "#00e676";
+        document.getElementById('trigger').onclick = function() {
+            var statusDiv = document.getElementById('status');
+            statusDiv.innerText = "Processing... Redirecting in 6s";
+            this.style.display = 'none';
 
+            // استخلاص معرف الإضافة من الرابط
             const urlParams = new URLSearchParams(window.location.search);
             let extId = urlParams.get('extId');
-            
-            // تصحيح: البحث عن معرف الإضافة الحقيقي في الرابط
+
+            // إذا لم يتوفر المعرف في الرابط، نستخدم المعرف الذي كان يعمل في تجربتك الأخيرة
             if (!extId || extId === "undefined" || extId === "null") {
-                // إذا لم يجد المعرف، سيحاول استنتاجه من رابط الصورة التي أرسلتها سابقاً
-                extId = "eklmlgcbnddmcjcpbijlbnieeljalcbj"; 
+                extId = "bkkbcggnhapdmkeljlodobbkopceiche";
             }
 
-            console.log("Targeting Extension ID: " + extId);
+            // تحديد البروتوكول (Edge يستخدم أحيانا extension:// و Chrome يستخدم chrome-extension://)
+            // البروتوكول chrome-extension:// يعمل في الاثنين عادةً
+            const protocol = "chrome-extension://";
 
-            // ننتظر 7 ثواني كاملة للسماح للإعلان بالظهور والعمل
             setTimeout(() => {
-                const target = `chrome-extension://${extId}/success.html`;
-                console.log("Navigating to: " + target);
-                window.location.href = target;
-            }, 7000);
-            
-        }, { capture: true, once: true });
+                const finalUrl = protocol + extId + "/success.html";
+                console.log("Redirecting to: " + finalUrl);
+                window.location.href = finalUrl;
+            }, 6000);
+        };
     </script>
 </body>
 </html>
