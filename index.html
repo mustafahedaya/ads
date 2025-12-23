@@ -7,11 +7,7 @@
         body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: 'Segoe UI', sans-serif; }
         .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 450px; background: rgba(0,230,118,0.05); }
         h1 { color: #00e676; margin-bottom: 10px; }
-        p { color: #aaa; line-height: 1.6; }
-        .btn-container { margin-top: 30px; }
-        #mainBtn { padding: 18px 45px; font-size: 20px; background: #00e676; border: none; cursor: pointer; border-radius: 50px; font-weight: bold; color: #000; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,230,118,0.3); }
-        #mainBtn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
-        #mainBtn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
+        #mainBtn { padding: 18px 45px; font-size: 20px; background: #00e676; border: none; cursor: pointer; border-radius: 50px; font-weight: bold; color: #000; transition: 0.3s; }
         #timerBox { display: none; margin-top: 20px; font-weight: bold; color: #00e676; font-size: 18px; }
     </style>
 </head>
@@ -19,14 +15,14 @@
 
     <div class="box">
         <h1>Extra Room Unlock</h1>
-        <p>To create a 4th room today, please support us by clicking below. The ad will open in a new tab.</p>
+        <p>Click below to open the ad and unlock your room. <br> <b>Note:</b> If in InPrivate/Incognito, make sure to allow the extension in your browser settings.</p>
         
         <div class="btn-container">
             <button id="mainBtn">CLICK TO UNLOCK</button>
         </div>
 
         <div id="timerBox">
-            Verifying support... <span id="seconds">10</span>s
+            Verifying... Redirecting in <span id="seconds">10</span>s
         </div>
     </div>
 
@@ -37,10 +33,7 @@
         const secondsSpan = document.getElementById('seconds');
 
         btn.onclick = function() {
-            // 1. فتح رابط الإعلان المباشر في نافذة جديدة
             window.open(AD_URL, '_blank');
-
-            // 2. تحديث الواجهة لبدء العد التنازلي
             btn.style.display = 'none';
             timerBox.style.display = 'block';
 
@@ -48,7 +41,6 @@
             const interval = setInterval(() => {
                 timeLeft--;
                 secondsSpan.innerText = timeLeft;
-
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                     completeReward();
@@ -58,9 +50,15 @@
 
         function completeReward() {
             const urlParams = new URLSearchParams(window.location.search);
-            let extId = urlParams.get('extId') || "bkkbcggnhapdmkeljlodobbkopceiche";
+            // التقاط المعرف من الرابط (مهم جداً لأن معرف كروم يختلف عن معرف إيدج)
+            let extId = urlParams.get('extId');
+            
+            if (!extId || extId === "undefined") {
+                // محاولة استنتاج المعرف من الصورة التي أرسلتها (نسخة إيدج)
+                extId = "eklimlgcbnddmcjcpbijlbnieeljalcbj"; 
+            }
 
-            // العودة للإضافة لمنح المكافأة
+            // استخدام البروتوكول العالمي الذي يعمل في جميع المتصفحات
             window.location.href = `chrome-extension://${extId}/success.html`;
         }
     </script>
