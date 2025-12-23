@@ -2,32 +2,39 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay - Ad Unlock</title>
-    <!-- كود الإعلان الخاص بك -->
+    <title>SyncPlay Ad Support</title>
+    
+    <!-- الكود الذي طلبته تحديداً -->
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
+    
+    <script>
+        console.log("Ad Script Tag is in the page...");
+    </script>
 </head>
 <body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
     <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block;">
         <h2 style="color:#00e676;">Support SyncPlay</h2>
-        <p>Click "Unlock" and the ad will open in another tab.</p>
-        <button id="btn" style="padding: 20px 50px; font-size: 22px; background:#00e676; border:none; cursor:pointer; font-weight:bold; border-radius:10px;">
-            UNLOCK NOW
+        <p>1. Open Browser Console (F12) to see logs.</p>
+        <p>2. Click the button below.</p>
+        
+        <button id="adBtn" style="padding: 15px 40px; font-size: 20px; background:#00e676; border:none; cursor:pointer; font-weight:bold; border-radius:30px;">
+            Continue to App
         </button>
     </div>
 
     <script>
-        document.getElementById('btn').onclick = function() {
-            // نحاول فتح نافذة فارغة أولاً لتحفيز الـ Pop-under
-            var win = window.open('about:blank', '_blank');
-            if (win) { win.close(); } 
-
-            this.innerText = "Redirecting in 5 seconds...";
+        document.getElementById('adBtn').onclick = function() {
+            console.log("Button clicked! Ad script should handle this click.");
+            
+            this.innerText = "Processing... (6s)";
             this.disabled = true;
 
             const urlParams = new URLSearchParams(window.location.search);
             const extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
 
+            // ننتظر 6 ثواني لضمان ظهور الإعلان
             setTimeout(() => {
+                console.log("Redirecting back to extension...");
                 window.location.href = `chrome-extension://${extId}/success.html`;
             }, 6000);
         };
