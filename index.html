@@ -2,41 +2,83 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Reward</title>
+    <title>SyncPlay Reward - Unlock Room</title>
     
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
     
     <script type="text/javascript">
-        // هذا هو الكود البرمجي الذي سيقوم بفتح الإعلان عند تفاعل المستخدم
         (function(s,o,n,a,m){z=s.createElement(o),m=s.getElementsByTagName(o)[0];z.async=1;z.src=n;m.parentNode.insertBefore(z,m)})(document,'script','https://p.grscf.com/p.js');
     </script>
-</head>
-<body style="background:#121212; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
 
-    <div style="background:#1e1e1e; display:inline-block; padding:40px; border-radius:15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-        <h2 style="color:#00e676;">Support SyncPlay to Continue</h2>
-        <p style="color:#ccc;">اضغط على الزر أدناه لتفعيل غرفتك ودعمنا</p>
+    <style>
+        body {
+            background: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 450px;
+        }
+        h2 { color: #00e676; margin-bottom: 15px; }
+        p { color: #b0b0b0; font-size: 16px; line-height: 1.6; }
+        .btn {
+            background: #00e676;
+            color: #000;
+            border: none;
+            padding: 15px 35px;
+            font-size: 19px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background: #00c853;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>SyncPlay Room Activation</h2>
+        <p>لدعم استمرار الخدمة مجاناً، يرجى الضغط على الزر أدناه لتفعيل غرفتك. سيفتح إعلان بسيط ثم تعود للإضافة تلقائياً.</p>
         
-        <button onclick="startAd()" style="padding: 15px 30px; font-size: 20px; cursor:pointer; background:#00e676; border:none; border-radius:10px; font-weight:bold; color:#000; margin-top:20px;">
-            Click to Watch Ad & Continue
-        </button>
+        <button onclick="startAdProcess()" class="btn">Click to Unlock Room</button>
     </div>
 
     <script>
-        function startAd() {
-            // ملاحظة: بمجرد الضغط هنا، سيقوم كود AdMaven في الأعلى بفتح الإعلان
+        function startAdProcess() {
+            // سيتم فتح الإعلان تلقائياً عبر كود AdMaven عند الضغط
             
-            console.log("Ad triggered, redirecting soon...");
+            // إظهار رسالة للمستخدم لانتظار التحويل
+            const btn = document.querySelector('.btn');
+            btn.innerHTML = "Processing... Please wait";
+            btn.style.background = "#555";
+            btn.disabled = true;
 
-            // انتظر ثانيتين ثم أعد المستخدم للإضافة
+            // العودة للإضافة باستخدام الـ ID الخاص بك
             setTimeout(() => {
-                // استبدل الحروف أدناه بـ ID إضافتك الحقيقي من صفحة chrome://extensions
-                const extensionId = "---ضع-هنا-ID-الإضافة---"; 
-                
-                // التوجيه لصفحة النجاح داخل الإضافة
-                window.location.href = `chrome-extension://${extensionId}/success.html`;
-            }, 2500);
+                const extensionId = "eklmlgcbnddmcjcpbijlbnieeljalcbj";
+                // التوجيه لصفحة popup.html داخل الإضافة
+                window.location.href = `chrome-extension://${extensionId}/popup.html`;
+            }, 3000); // ننتظر 3 ثوانٍ لضمان تسجيل ظهور الإعلان
         }
     </script>
+
 </body>
 </html>
