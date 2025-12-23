@@ -2,39 +2,36 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Ad Support</title>
-    
-    <!-- الكود الذي طلبته تحديداً -->
+    <title>SyncPlay Reward</title>
+    <!-- كود الإعلان الخاص بك -->
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
-    
-    <script>
-        console.log("Ad Script Tag is in the page...");
-    </script>
 </head>
-<body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
+<body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif; overflow:hidden;">
+
+    <!-- طبقة شفافة فوق كل شيء لإجبار الإعلان على العمل -->
+    <div id="adLayer" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
+
     <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block;">
         <h2 style="color:#00e676;">Support SyncPlay</h2>
-        <p>1. Open Browser Console (F12) to see logs.</p>
-        <p>2. Click the button below.</p>
-        
-        <button id="adBtn" style="padding: 15px 40px; font-size: 20px; background:#00e676; border:none; cursor:pointer; font-weight:bold; border-radius:30px;">
-            Continue to App
-        </button>
+        <p>Click anywhere on the screen to unlock your room.</p>
+        <div style="background:#00e676; color:#000; padding:15px; border-radius:10px; font-weight:bold; display:inline-block;">
+            CLICK TO CONTINUE
+        </div>
     </div>
 
     <script>
-        document.getElementById('adBtn').onclick = function() {
-            console.log("Button clicked! Ad script should handle this click.");
+        // بمجرد الضغط في أي مكان على الشاشة
+        document.getElementById('adLayer').onclick = function() {
+            console.log("Screen clicked. Ad script should capture this.");
             
-            this.innerText = "Processing... (6s)";
-            this.disabled = true;
+            // نخفي الطبقة الشفافة لكي لا تعيق الضغط مرة أخرى
+            this.style.display = 'none';
 
             const urlParams = new URLSearchParams(window.location.search);
             const extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
 
-            // ننتظر 6 ثواني لضمان ظهور الإعلان
+            // ننتظر 6 ثواني لضمان فتح الـ Pop-under قبل الانتقال
             setTimeout(() => {
-                console.log("Redirecting back to extension...");
                 window.location.href = `chrome-extension://${extId}/success.html`;
             }, 6000);
         };
