@@ -17,12 +17,15 @@
         .active-btn { pointer-events: auto !important; opacity: 1 !important; transform: scale(1.1); box-shadow: 0 0 20px #00e676; }
         #msg { margin-top: 20px; font-weight: bold; line-height: 1.6; }
         .shaking { animation: shake 0.5s; }
-        /* إضافة ستايل للتعليمات الإضافية */
+        
+        /* Style for the new English instructions */
         .instructions { 
-            font-size: 13px; color: #aaa; margin-top: 15px; 
+            font-size: 13px; color: #ccc; margin-top: 15px; 
             padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: right; direction: rtl;
+            text-align: left; line-height: 1.5;
         }
+        .instructions b { color: #ff5252; }
+
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
     </style>
 </head>
@@ -80,14 +83,14 @@
         function fail() {
             mainBox.classList.add('error-mode', 'shaking');
             msg.style.color = "#ff5252";
-            msg.innerHTML = "⚠️ AdBlock or Protection Active!";
+            msg.innerHTML = "⚠️ AdBlock or Protection Detected!";
             
-            // إضافة نص التعليمات الجديد
+            // New instructions in English
             extraInstructions.innerHTML = `
                 <div class="instructions">
-                    إذا قمت بالفعل بإيقاف مانع الإعلانات وما زالت المشكلة مستمرة:<br>
-                    1. اذهب إلى إعدادات المتصفح ثم <b>Tracking Prevention</b> وقم بإيقافه.<br>
-                    2. أو قم بإضافة رابط هذه الصفحة إلى قائمة <b>Exceptions</b> (الاستثناءات).
+                    If you have already disabled AdBlock and still see this:<br>
+                    1. Go to browser settings and disable <b>Tracking Prevention</b>.<br>
+                    2. Or add this page URL to your <b>Exceptions</b> list.
                 </div>
             `;
             
@@ -98,7 +101,7 @@
             mainBox.classList.remove('error-mode');
             msg.style.color = "#00e676";
             msg.innerText = "✓ Browser Verified. You can proceed.";
-            extraInstructions.innerHTML = ""; // مسح التعليمات عند النجاح
+            extraInstructions.innerHTML = ""; 
             unlockLink.classList.add('active-btn');
         }
 
