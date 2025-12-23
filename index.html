@@ -2,32 +2,34 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Support</title>
+    <title>SyncPlay - Ad Unlock</title>
     <!-- كود الإعلان الخاص بك -->
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
 </head>
 <body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
-    <div style="border: 2px solid #00e676; padding: 30px; display: inline-block; border-radius: 15px;">
-        <h2>Ready to continue?</h2>
-        <p>Click "Show Ad" to unlock your room.</p>
-        <button id="btn" style="padding: 15px 30px; font-size: 20px; background:#00e676; border:none; cursor:pointer; font-weight:bold;">Show Ad</button>
+    <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block;">
+        <h2 style="color:#00e676;">Support SyncPlay</h2>
+        <p>Click "Unlock" and the ad will open in another tab.</p>
+        <button id="btn" style="padding: 20px 50px; font-size: 22px; background:#00e676; border:none; cursor:pointer; font-weight:bold; border-radius:10px;">
+            UNLOCK NOW
+        </button>
     </div>
 
     <script>
         document.getElementById('btn').onclick = function() {
-            // كود الإعلان سيعمل تلقائياً عند الضغط
-            console.log("Ad script should trigger now...");
-            
-            this.innerText = "Please wait 5 seconds...";
+            // نحاول فتح نافذة فارغة أولاً لتحفيز الـ Pop-under
+            var win = window.open('about:blank', '_blank');
+            if (win) { win.close(); } 
+
+            this.innerText = "Redirecting in 5 seconds...";
             this.disabled = true;
 
             const urlParams = new URLSearchParams(window.location.search);
-            const extId = urlParams.get('extId');
+            const extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
 
-            // ننتظر 5 ثواني لضمان تسجيل الإعلان وفتحه
             setTimeout(() => {
                 window.location.href = `chrome-extension://${extId}/success.html`;
-            }, 5000);
+            }, 6000);
         };
     </script>
 </body>
