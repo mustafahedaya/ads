@@ -2,68 +2,67 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay - Security Check</title>
-    
-    <!-- كود الإعلان الخاص بك -->
-    <script id="adScript" data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
-    
+    <title>SyncPlay Reward Center</title>
     <style>
-        body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: sans-serif; }
-        .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 400px; }
-        .blocked-msg { color: #ff5252; display: none; margin-top: 20px; font-weight: bold; }
-        button { padding: 15px 30px; font-size: 18px; background: #00e676; border: none; cursor: pointer; border-radius: 10px; font-weight: bold; }
-        button:disabled { background: #333; cursor: not-allowed; color: #666; }
+        body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: 'Segoe UI', sans-serif; }
+        .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 450px; background: rgba(0,230,118,0.05); }
+        h1 { color: #00e676; margin-bottom: 10px; }
+        p { color: #aaa; line-height: 1.6; }
+        .btn-container { margin-top: 30px; }
+        #mainBtn { padding: 18px 45px; font-size: 20px; background: #00e676; border: none; cursor: pointer; border-radius: 50px; font-weight: bold; color: #000; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,230,118,0.3); }
+        #mainBtn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
+        #mainBtn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
+        #timerBox { display: none; margin-top: 20px; font-weight: bold; color: #00e676; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <div class="box">
-        <h2 id="title">Reward Verification</h2>
-        <p id="desc">Please click the button to verify and unlock your extra room.</p>
+        <h1>Extra Room Unlock</h1>
+        <p>To create a 4th room today, please support us by clicking below. The ad will open in a new tab.</p>
         
-        <button id="unlockBtn" disabled>Checking...</button>
-        
-        <div id="adblockMsg" class="blocked-msg">
-            ⚠️ AdBlock Detected!<br>
-            Please disable AdBlock for this site and refresh to continue.
+        <div class="btn-container">
+            <button id="mainBtn">CLICK TO UNLOCK</button>
+        </div>
+
+        <div id="timerBox">
+            Verifying support... <span id="seconds">10</span>s
         </div>
     </div>
 
     <script>
-        const unlockBtn = document.getElementById('unlockBtn');
-        const adblockMsg = document.getElementById('adblockMsg');
+        const AD_URL = "https://www.effectivegatecpm.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16";
+        const btn = document.getElementById('mainBtn');
+        const timerBox = document.getElementById('timerBox');
+        const secondsSpan = document.getElementById('seconds');
 
-        // دالة للتحقق من تحميل كود الإعلان
-        function checkAdStatus() {
-            // معظم مانعي الإعلانات يحذفون المتغيرات التي ينشئها كود الإعلان
-            // سنفحص إذا كان ملف الإعلان قد تم تحميله فعلاً
-            const adLoaded = (typeof P7Q !== 'undefined');
+        btn.onclick = function() {
+            // 1. فتح رابط الإعلان المباشر في نافذة جديدة
+            window.open(AD_URL, '_blank');
 
-            if (adLoaded) {
-                unlockBtn.disabled = false;
-                unlockBtn.innerText = "Unlock Now";
-                adblockMsg.style.display = 'none';
-            } else {
-                unlockBtn.disabled = true;
-                unlockBtn.innerText = "Action Blocked";
-                adblockMsg.style.display = 'block';
-            }
-        }
+            // 2. تحديث الواجهة لبدء العد التنازلي
+            btn.style.display = 'none';
+            timerBox.style.display = 'block';
 
-        // انتظر ثانية للتأكد من انتهاء محاولة التحميل
-        setTimeout(checkAdStatus, 1500);
+            let timeLeft = 10;
+            const interval = setInterval(() => {
+                timeLeft--;
+                secondsSpan.innerText = timeLeft;
 
-        unlockBtn.onclick = function() {
-            this.innerText = "Redirecting...";
-            this.disabled = true;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    completeReward();
+                }
+            }, 1000);
+        };
 
+        function completeReward() {
             const urlParams = new URLSearchParams(window.location.search);
             let extId = urlParams.get('extId') || "bkkbcggnhapdmkeljlodobbkopceiche";
 
-            setTimeout(() => {
-                window.location.href = `chrome-extension://${extId}/success.html`;
-            }, 6000);
-        };
+            // العودة للإضافة لمنح المكافأة
+            window.location.href = `chrome-extension://${extId}/success.html`;
+        }
     </script>
 </body>
 </html>
