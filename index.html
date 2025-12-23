@@ -2,63 +2,76 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Reward Center</title>
+    <title>SyncPlay - Exclusive Access</title>
     <style>
         body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: 'Segoe UI', sans-serif; }
         .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 450px; background: rgba(0,230,118,0.05); }
         h1 { color: #00e676; margin-bottom: 10px; }
-        #mainBtn { padding: 18px 45px; font-size: 20px; background: #00e676; border: none; cursor: pointer; border-radius: 50px; font-weight: bold; color: #000; transition: 0.3s; }
+        /* تصميم الرابط ليظهر كأنه زر */
+        #unlockLink { 
+            display: inline-block;
+            padding: 18px 45px; 
+            font-size: 20px; 
+            background: #00e676; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            color: #000; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 15px rgba(0,230,118,0.3); 
+        }
+        #unlockLink:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
         #timerBox { display: none; margin-top: 20px; font-weight: bold; color: #00e676; font-size: 18px; }
     </style>
 </head>
 <body>
 
     <div class="box">
-        <h1>Extra Room Unlock</h1>
-        <p>Click below to open the ad and unlock your room. <br> <b>Note:</b> If in InPrivate/Incognito, make sure to allow the extension in your browser settings.</p>
+        <h1>SyncPlay Support</h1>
+        <p>1. Open the ad by clicking the link.<br>2. Wait for the 10s countdown to finish.<br>3. Your room will unlock automatically.</p>
         
-        <div class="btn-container">
-            <button id="mainBtn">CLICK TO UNLOCK</button>
+        <div class="btn-container" id="linkContainer">
+            <!-- استخدام رابط حقيقي target="_blank" هو الحل القاطع للحظر -->
+            <a href="https://www.effectivegatecpm.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16" 
+               id="unlockLink" 
+               target="_blank" 
+               onclick="startCountdown()">
+               CLICK TO UNLOCK
+            </a>
         </div>
 
         <div id="timerBox">
-            Verifying... Redirecting in <span id="seconds">10</span>s
+            Verifying support... <span id="seconds">10</span>s
         </div>
     </div>
 
     <script>
-        const AD_URL = "https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16";
-        const btn = document.getElementById('mainBtn');
         const timerBox = document.getElementById('timerBox');
+        const linkContainer = document.getElementById('linkContainer');
         const secondsSpan = document.getElementById('seconds');
 
-        btn.onclick = function() {
-            window.open(AD_URL, '_blank');
-            btn.style.display = 'none';
+        function startCountdown() {
+            // أولاً: نبدأ العد التنازلي في الصفحة الحالية
+            linkContainer.style.display = 'none';
             timerBox.style.display = 'block';
 
             let timeLeft = 10;
             const interval = setInterval(() => {
                 timeLeft--;
                 secondsSpan.innerText = timeLeft;
+
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                     completeReward();
                 }
             }, 1000);
-        };
+        }
 
         function completeReward() {
             const urlParams = new URLSearchParams(window.location.search);
-            // التقاط المعرف من الرابط (مهم جداً لأن معرف كروم يختلف عن معرف إيدج)
-            let extId = urlParams.get('extId');
-            
-            if (!extId || extId === "undefined") {
-                // محاولة استنتاج المعرف من الصورة التي أرسلتها (نسخة إيدج)
-                extId = "eklimlgcbnddmcjcpbijlbnieeljalcbj"; 
-            }
+            // استخراج المعرف أو استخدام الافتراضي
+            let extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
 
-            // استخدام البروتوكول العالمي الذي يعمل في جميع المتصفحات
             window.location.href = `chrome-extension://${extId}/success.html`;
         }
     </script>
