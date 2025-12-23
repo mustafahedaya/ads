@@ -2,64 +2,90 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay - Exclusive Access</title>
+    <title>SyncPlay - Security Check</title>
     <style>
         body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: 'Segoe UI', sans-serif; }
         .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 450px; background: rgba(0,230,118,0.05); }
         h1 { color: #00e676; margin-bottom: 10px; }
-        /* تصميم الرابط ليظهر كأنه زر */
         #unlockLink { 
-            display: inline-block;
-            padding: 18px 45px; 
-            font-size: 20px; 
-            background: #00e676; 
-            text-decoration: none; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            color: #000; 
-            transition: 0.3s; 
-            box-shadow: 0 4px 15px rgba(0,230,118,0.3); 
+            display: inline-block; padding: 18px 45px; font-size: 20px; background: #00e676; 
+            text-decoration: none; border-radius: 50px; font-weight: bold; color: #000; 
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(0,230,118,0.3); pointer-events: none; opacity: 0.3;
         }
-        #unlockLink:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
+        .active-btn { pointer-events: auto !important; opacity: 1 !important; }
         #timerBox { display: none; margin-top: 20px; font-weight: bold; color: #00e676; font-size: 18px; }
+        .error-msg { color: #ff5252; margin-top: 20px; display: none; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
 
+    <!-- عنصر وهمي للكشف عن AdBlock -->
+    <div id="ad-detector" class="ad-box ads banner_ad" style="position:absolute; width:1px; height:1px; left:-1000px;"></div>
+
     <div class="box">
-        <h1>SyncPlay Support</h1>
-        <p>1. Open the ad by clicking the link.<br>2. Wait for the 10s countdown to finish.<br>3. Your room will unlock automatically.</p>
+        <h1>Monetization Check</h1>
+        <p id="instruction">Please wait while we verify your connection...</p>
         
         <div class="btn-container" id="linkContainer">
-            <!-- استخدام رابط حقيقي target="_blank" هو الحل القاطع للحظر -->
             <a href="https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16" 
                id="unlockLink" 
                target="_blank" 
                onclick="startCountdown()">
-               CLICK TO UNLOCK
+               UNLOCK ROOM
             </a>
         </div>
 
+        <div id="adblockError" class="error-msg">
+            ⚠️ AdBlock/Popup Blocker Detected!<br>
+            You must disable all blockers (AdBlock, Poper Blocker, etc.) and refresh this page to continue.
+        </div>
+
         <div id="timerBox">
-            Verifying support... <span id="seconds">10</span>s
+            Redirecting to Extension in <span id="seconds">10</span>s
         </div>
     </div>
 
     <script>
-        const timerBox = document.getElementById('timerBox');
-        const linkContainer = document.getElementById('linkContainer');
-        const secondsSpan = document.getElementById('seconds');
+        const unlockLink = document.getElementById('unlockLink');
+        const adblockError = document.getElementById('adblockError');
+        const instruction = document.getElementById('instruction');
+
+        function detectAdBlock() {
+            const detector = document.getElementById('ad-detector');
+            // فحص إذا كان العنصر الوهمي قد تم حذفه أو إخفاؤه
+            const isBlocked = window.getComputedStyle(detector).display === 'none' || detector.offsetHeight === 0;
+            
+            if (isBlocked) {
+                showBlockingError();
+            } else {
+                enableButton();
+            }
+        }
+
+        function showBlockingError() {
+            unlockLink.classList.remove('active-btn');
+            adblockError.style.display = 'block';
+            instruction.innerText = "Access Blocked by Security Extension";
+        }
+
+        function enableButton() {
+            unlockLink.classList.add('active-btn');
+            adblockError.style.display = 'none';
+            instruction.innerText = "Verification Success. Click the button to unlock.";
+        }
+
+        // فحص أولي بعد ثانية واحدة
+        setTimeout(detectAdBlock, 1000);
 
         function startCountdown() {
-            // أولاً: نبدأ العد التنازلي في الصفحة الحالية
-            linkContainer.style.display = 'none';
-            timerBox.style.display = 'block';
+            document.getElementById('linkContainer').style.display = 'none';
+            document.getElementById('timerBox').style.display = 'block';
+            document.getElementById('instruction').innerText = "Ad opened in new tab. Please wait...";
 
             let timeLeft = 10;
             const interval = setInterval(() => {
                 timeLeft--;
-                secondsSpan.innerText = timeLeft;
-
+                document.getElementById('seconds').innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                     completeReward();
@@ -69,9 +95,7 @@
 
         function completeReward() {
             const urlParams = new URLSearchParams(window.location.search);
-            // استخراج المعرف أو استخدام الافتراضي
             let extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
-
             window.location.href = `chrome-extension://${extId}/success.html`;
         }
     </script>
