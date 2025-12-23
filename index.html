@@ -1,37 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncPlay - Site Verification</title>
+    <title>SyncPlay Reward</title>
     
-    <meta name='admaven-placement' content='Bqjw9rda8'>
+    <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
     
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .container {
-            text-align: center;
-            padding: 20px;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-    </style>
+    <script type="text/javascript">
+        // هذا هو الكود البرمجي الذي سيقوم بفتح الإعلان عند تفاعل المستخدم
+        (function(s,o,n,a,m){z=s.createElement(o),m=s.getElementsByTagName(o)[0];z.async=1;z.src=n;m.parentNode.insertBefore(z,m)})(document,'script','https://p.grscf.com/p.js');
+    </script>
 </head>
-<body>
-    <div class="container">
-        <h1>Site Verification in Progress</h1>
-        <p>This page is used to verify ownership for <strong>SyncPlay</strong> extension in the AdMaven network.</p>
-        <p>Please do not delete this file until the verification is complete.</p>
+<body style="background:#121212; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
+
+    <div style="background:#1e1e1e; display:inline-block; padding:40px; border-radius:15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <h2 style="color:#00e676;">Support SyncPlay to Continue</h2>
+        <p style="color:#ccc;">اضغط على الزر أدناه لتفعيل غرفتك ودعمنا</p>
+        
+        <button onclick="startAd()" style="padding: 15px 30px; font-size: 20px; cursor:pointer; background:#00e676; border:none; border-radius:10px; font-weight:bold; color:#000; margin-top:20px;">
+            Click to Watch Ad & Continue
+        </button>
     </div>
+
+    <script>
+        function startAd() {
+            // ملاحظة: بمجرد الضغط هنا، سيقوم كود AdMaven في الأعلى بفتح الإعلان
+            
+            console.log("Ad triggered, redirecting soon...");
+
+            // انتظر ثانيتين ثم أعد المستخدم للإضافة
+            setTimeout(() => {
+                // استبدل الحروف أدناه بـ ID إضافتك الحقيقي من صفحة chrome://extensions
+                const extensionId = "---ضع-هنا-ID-الإضافة---"; 
+                
+                // التوجيه لصفحة النجاح داخل الإضافة
+                window.location.href = `chrome-extension://${extensionId}/success.html`;
+            }, 2500);
+        }
+    </script>
 </body>
 </html>
