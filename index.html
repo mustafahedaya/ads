@@ -2,46 +2,66 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SyncPlay Reward</title>
+    <title>SyncPlay - Security Check</title>
+    
     <!-- كود الإعلان الخاص بك -->
-    <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
+    <script id="adScript" data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
+    
+    <style>
+        body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 100px; font-family: sans-serif; }
+        .box { border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block; max-width: 400px; }
+        .blocked-msg { color: #ff5252; display: none; margin-top: 20px; font-weight: bold; }
+        button { padding: 15px 30px; font-size: 18px; background: #00e676; border: none; cursor: pointer; border-radius: 10px; font-weight: bold; }
+        button:disabled { background: #333; cursor: not-allowed; color: #666; }
+    </style>
 </head>
-<body style="background:#0a0a0b; color:#fff; text-align:center; padding-top:100px; font-family:sans-serif;">
+<body>
 
-    <div style="border: 2px solid #00e676; padding: 40px; border-radius: 20px; display:inline-block;">
-        <h2 style="color:#00e676;">Reward Verification</h2>
-        <p>1. Ad will pop up shortly.<br>2. Wait for the automatic return.</p>
-        <div id="status" style="background:#333; padding:15px; border-radius:10px; color:#00e676; font-weight:bold;">
-            READY: CLICK ANYWHERE TO START
+    <div class="box">
+        <h2 id="title">Reward Verification</h2>
+        <p id="desc">Please click the button to verify and unlock your extra room.</p>
+        
+        <button id="unlockBtn" disabled>Checking...</button>
+        
+        <div id="adblockMsg" class="blocked-msg">
+            ⚠️ AdBlock Detected!<br>
+            Please disable AdBlock for this site and refresh to continue.
         </div>
     </div>
 
-    <!-- طبقة شفافة لالتقاط الضغطة -->
-    <div id="trigger" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; cursor:pointer;"></div>
-
     <script>
-        document.getElementById('trigger').onclick = function() {
-            var statusDiv = document.getElementById('status');
-            statusDiv.innerText = "Processing... Redirecting in 6s";
-            this.style.display = 'none';
+        const unlockBtn = document.getElementById('unlockBtn');
+        const adblockMsg = document.getElementById('adblockMsg');
 
-            // استخلاص معرف الإضافة من الرابط
-            const urlParams = new URLSearchParams(window.location.search);
-            let extId = urlParams.get('extId');
+        // دالة للتحقق من تحميل كود الإعلان
+        function checkAdStatus() {
+            // معظم مانعي الإعلانات يحذفون المتغيرات التي ينشئها كود الإعلان
+            // سنفحص إذا كان ملف الإعلان قد تم تحميله فعلاً
+            const adLoaded = (typeof P7Q !== 'undefined');
 
-            // إذا لم يتوفر المعرف في الرابط، نستخدم المعرف الذي كان يعمل في تجربتك الأخيرة
-            if (!extId || extId === "undefined" || extId === "null") {
-                extId = "bkkbcggnhapdmkeljlodobbkopceiche";
+            if (adLoaded) {
+                unlockBtn.disabled = false;
+                unlockBtn.innerText = "Unlock Now";
+                adblockMsg.style.display = 'none';
+            } else {
+                unlockBtn.disabled = true;
+                unlockBtn.innerText = "Action Blocked";
+                adblockMsg.style.display = 'block';
             }
+        }
 
-            // تحديد البروتوكول (Edge يستخدم أحيانا extension:// و Chrome يستخدم chrome-extension://)
-            // البروتوكول chrome-extension:// يعمل في الاثنين عادةً
-            const protocol = "chrome-extension://";
+        // انتظر ثانية للتأكد من انتهاء محاولة التحميل
+        setTimeout(checkAdStatus, 1500);
+
+        unlockBtn.onclick = function() {
+            this.innerText = "Redirecting...";
+            this.disabled = true;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let extId = urlParams.get('extId') || "bkkbcggnhapdmkeljlodobbkopceiche";
 
             setTimeout(() => {
-                const finalUrl = protocol + extId + "/success.html";
-                console.log("Redirecting to: " + finalUrl);
-                window.location.href = finalUrl;
+                window.location.href = `chrome-extension://${extId}/success.html`;
             }, 6000);
         };
     </script>
