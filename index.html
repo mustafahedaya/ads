@@ -3,168 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock Extra Room</title>
+    <title>Unlock Your Reward</title>
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            text-align: center;
+            overflow: hidden;
         }
-        .container {
-            background: #1e1e1e;
+        .card {
+            background: #1a1a1a;
             padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
             border: 1px solid #333;
         }
-        h2 { color: #fff; margin-bottom: 0.5rem; }
-        p { color: #a0a0a0; font-size: 0.95rem; }
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
+        p { color: #999; font-size: 0.9rem; line-height: 1.5; margin-bottom: 2rem; }
         
-        #ad-container {
-            width: 300px;
-            height: 250px;
-            background: #252525;
-            margin: 1.5rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px dashed #444;
-            border-radius: 8px;
-        }
         .btn {
-            background-color: #03dac6;
-            color: #000;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            display: none;
-            transition: all 0.2s ease;
+            display: inline-block;
             width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
         }
-        .btn:hover { background-color: #04f0d8; transform: translateY(-2px); }
-        .btn:active { transform: translateY(0); }
 
-        #timer { 
-            font-size: 1.1rem; 
-            color: #bb86fc; 
-            margin: 15px 0;
-            font-weight: 500;
+        /* زر فتح الإعلان */
+        #ad-btn {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
         }
-        .error-msg { 
-            color: #cf6679; 
-            font-size: 0.85rem; 
-            display: none; 
-            margin-top: 15px;
-            line-height: 1.4;
+        #ad-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5); }
+
+        /* زر الحصول على الجائزة */
+        #claim-btn {
+            background: #00d1b2;
+            color: #000;
+            display: none;
         }
+
+        #status-area { margin-top: 20px; font-weight: 500; color: #bb86fc; }
+        .success-card { color: #00d1b2; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Unlock Daily Limit</h2>
-        <p>Please view the featured content for 5 seconds to unlock another room creation.</p>
-        
-        <div id="ad-container">
-            <!-- Insert your Ad Code Here -->
-            <div id="actual-ad" style="width:100%; height:100%; display: flex; align-items:center; justify-content:center;">
-                <p style="font-size: 0.8rem;">Loading Advertisement...</p>
-            </div>
-        </div>
 
-        <div id="timer">Remaining: 5s</div>
-        <div id="error-notice" class="error-msg">
-            Technical Error: Ad content failed to initialize. <br>
-            Please ensure no security scripts are blocking the verification process.
-        </div>
-        
-        <button id="unlock-btn" class="btn">Unlock Reward</button>
+    <div class="card" id="main-card">
+        <div class="icon">🎁</div>
+        <h2>Unlock Extra Room</h2>
+        <p>To create a new room, please click the button below to view the sponsor's content for 5 seconds.</p>
+
+        <!-- زر يفتح رابط الإعلانات الخاص بك -->
+        <a href="https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16" 
+           target="_blank" 
+           id="ad-btn" 
+           class="btn">
+           View Ad & Unlock
+        </a>
+
+        <button id="claim-btn" class="btn">Claim My Reward ✅</button>
+
+        <div id="status-area"></div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const extId = urlParams.get('extId');
+        const adBtn = document.getElementById('ad-btn');
+        const claimBtn = document.getElementById('claim-btn');
+        const statusArea = document.getElementById('status-area');
+        
+        let timerStarted = false;
         let timeLeft = 5;
-        let timerInterval;
-        const timerEl = document.getElementById('timer');
-        const unlockBtn = document.getElementById('unlock-btn');
-        const errorNotice = document.getElementById('error-notice');
 
-        function checkAdBlock() {
-            const ad = document.getElementById('actual-ad');
-            // Check if ad element is collapsed or hidden
-            if (ad.offsetHeight === 0) {
-                errorNotice.style.display = 'block';
-                return true;
-            }
-            return false;
-        }
+        adBtn.addEventListener('click', () => {
+            if (timerStarted) return;
+            timerStarted = true;
+            
+            // تغيير نص الزر ليوضح أن العداد بدأ
+            adBtn.style.opacity = "0.5";
+            adBtn.style.pointerEvents = "none";
+            adBtn.textContent = "Processing...";
 
-        function startTimer() {
-            if (timerInterval || timeLeft <= 0) return;
-            timerInterval = setInterval(() => {
+            startCounter();
+        });
+
+        function startCounter() {
+            const interval = setInterval(() => {
                 if (timeLeft > 0) {
+                    statusArea.textContent = `Please wait ${timeLeft}s...`;
                     timeLeft--;
-                    timerEl.textContent = `Remaining: ${timeLeft}s`;
                 } else {
-                    clearInterval(timerInterval);
-                    timerEl.style.display = 'none';
-                    unlockBtn.style.display = 'block';
+                    clearInterval(interval);
+                    statusArea.style.display = 'none';
+                    adBtn.style.display = 'none';
+                    claimBtn.style.display = 'block';
                 }
             }, 1000);
         }
 
-        function pauseTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-
-        // Handle Tab Visibility (Security Feature)
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                startTimer();
-            } else {
-                pauseTimer();
-            }
-        });
-
-        // Initialize timer if tab is active
-        if (document.visibilityState === "visible") startTimer();
-
-        unlockBtn.addEventListener('click', () => {
+        claimBtn.addEventListener('click', () => {
             if (!extId) {
-                alert("Extension Context Missing!");
+                alert("Error: Extension ID not found.");
                 return;
             }
 
-            // Securely notify the extension via externally_connectable
+            // إرسال النجاح للإضافة
             chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (response) => {
                 if (chrome.runtime.lastError) {
-                    alert("Connection failed. Please ensure the extension is active.");
+                    alert("Connection failed! Make sure the extension is active.");
                 } else {
-                    document.body.innerHTML = `
-                        <div class='container'>
-                            <h2 style='color:#03dac6'>Step Completed! ✅</h2>
-                            <p>Reward granted. You can now close this tab and create your room.</p>
-                        </div>`;
+                    document.getElementById('main-card').innerHTML = `
+                        <div class="icon">✅</div>
+                        <h2 class="success-card">Unlocked!</h2>
+                        <p>Your reward has been granted. You can now close this tab and create your room.</p>
+                    `;
                 }
             });
         });
-
-        // Verification check after 1.5s
-        setTimeout(() => {
-            if (checkAdBlock()) pauseTimer();
-        }, 1500);
     </script>
 </body>
 </html>
