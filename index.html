@@ -1,176 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncPlay - Daily Limit</title>
-    <!-- Ad Script Start -->
-    <script id="adScript" data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
-    
+    <title>Unlock Extra Room</title>
     <style>
-        body { background: #0a0a0b; color: #fff; text-align: center; padding-top: 50px; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; }
-        .box { 
-            border: 2px solid #00e676; padding: 30px; border-radius: 20px; 
-            display: inline-block; max-width: 500px; width: 90%;
-            background: rgba(0,230,118,0.05); transition: 0.5s; 
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
         }
-        .error-mode { border-color: #ff5252 !important; background: rgba(255,82,82,0.05) !important; }
+        .container {
+            background: #1e1e1e;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 420px;
+            border: 1px solid #333;
+        }
+        h2 { color: #fff; margin-bottom: 0.5rem; }
+        p { color: #a0a0a0; font-size: 0.95rem; }
         
-        .info-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: left;
-            font-size: 14px;
-            border-left: 4px solid #00e676;
+        #ad-container {
+            width: 300px;
+            height: 250px;
+            background: #252525;
+            margin: 1.5rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #444;
+            border-radius: 8px;
         }
-
-        #unlockLink { 
-            display: inline-block; padding: 18px 45px; font-size: 18px; background: #00e676; 
-            text-decoration: none; border-radius: 50px; font-weight: bold; color: #000; 
-            transition: 0.3s; pointer-events: none; opacity: 0.1;
-            margin-top: 10px;
-        }
-        .active-btn { pointer-events: auto !important; opacity: 1 !important; transform: scale(1.05); box-shadow: 0 0 20px #00e676; cursor: pointer; }
-        .active-btn:hover { transform: scale(1.1); box-shadow: 0 0 30px #00e676; }
-        
-        #msg { margin-top: 20px; font-weight: bold; line-height: 1.6; font-size: 16px; }
-        .shaking { animation: shake 0.5s; }
-        
-        .instructions { 
-            font-size: 13px; color: #ccc; margin-top: 15px; 
-            padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
-            text-align: left; line-height: 1.5;
-        }
-        .instructions b { color: #ff5252; }
-
-        .limit-badge {
-            background: #00e676;
+        .btn {
+            background-color: #03dac6;
             color: #000;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin: 0 5px;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s ease;
+            width: 100%;
         }
+        .btn:hover { background-color: #04f0d8; transform: translateY(-2px); }
+        .btn:active { transform: translateY(0); }
 
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        #timer { 
+            font-size: 1.1rem; 
+            color: #bb86fc; 
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        .error-msg { 
+            color: #cf6679; 
+            font-size: 0.85rem; 
+            display: none; 
+            margin-top: 15px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
-
-    <!-- Trap for AdBlockers -->
-    <div class="ad-container ads-banner-top advertising_box pub_300x250" id="adTrap" 
-         style="position:absolute; width:300px; height:250px; top:-1000px; left:-1000px; display:block !important; visibility:visible !important;">
-        &nbsp;
-    </div>
-
-    <div class="box" id="mainBox">
-        <h1 id="title" style="margin-top:0; color:#00e676;">SyncPlay Access</h1>
+    <div class="container">
+        <h2>Unlock Daily Limit</h2>
+        <p>Please view the featured content for 5 seconds to unlock another room creation.</p>
         
-        <div class="info-card">
-            <p style="margin-top:0;"><b>Why am I seeing this?</b></p>
-            To keep development active and servers free, we use a daily limit system:
-            <ul style="padding-left: 20px; margin-bottom: 0; margin-top: 8px;">
-                <li>You have <span class="limit-badge">3</span> free rooms per day.</li>
-                <li>You've reached your daily limit. Unlock more rooms by viewing an ad.</li>
-                <li>After clicking the button, wait 5 seconds to be redirected.</li>
-            </ul>
-        </div>
-        
-        <p id="desc" style="color:#aaa; font-size: 14px;">Please wait while we verify your browser...</p>
-        
-        <div id="linkContainer">
-            <a href="https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16" 
-               id="unlockLink" target="_blank" onclick="startCountdown()">UNLOCK ROOM NOW</a>
+        <div id="ad-container">
+            <!-- Insert your Ad Code Here -->
+            <div id="actual-ad" style="width:100%; height:100%; display: flex; align-items:center; justify-content:center;">
+                <p style="font-size: 0.8rem;">Loading Advertisement...</p>
+            </div>
         </div>
 
-        <div id="msg" style="color: #666;">Initializing verification...</div>
-        <div id="extraInstructions"></div>
+        <div id="timer">Remaining: 5s</div>
+        <div id="error-notice" class="error-msg">
+            Technical Error: Ad content failed to initialize. <br>
+            Please ensure no security scripts are blocking the verification process.
+        </div>
+        
+        <button id="unlock-btn" class="btn">Unlock Reward</button>
     </div>
 
     <script>
-        const unlockLink = document.getElementById('unlockLink');
-        const mainBox = document.getElementById('mainBox');
-        const msg = document.getElementById('msg');
-        const extraInstructions = document.getElementById('extraInstructions');
-        const adTrap = document.getElementById('adTrap');
+        const urlParams = new URLSearchParams(window.location.search);
+        const extId = urlParams.get('extId');
+        let timeLeft = 5;
+        let timerInterval;
+        const timerEl = document.getElementById('timer');
+        const unlockBtn = document.getElementById('unlock-btn');
+        const errorNotice = document.getElementById('error-notice');
 
-        async function advancedDetection() {
-            let isAdBlockActive = false;
-
-            if (window.getComputedStyle(adTrap).display === 'none' || 
-                window.getComputedStyle(adTrap).visibility === 'hidden' ||
-                adTrap.offsetHeight === 0) {
-                isAdBlockActive = true;
+        function checkAdBlock() {
+            const ad = document.getElementById('actual-ad');
+            // Check if ad element is collapsed or hidden
+            if (ad.offsetHeight === 0) {
+                errorNotice.style.display = 'block';
+                return true;
             }
-
-            if (!isAdBlockActive) {
-                try {
-                    await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
-                        method: 'HEAD', mode: 'no-cors'
-                    }).catch(() => { isAdBlockActive = true; });
-                } catch (e) { isAdBlockActive = true; }
-            }
-
-            if (isAdBlockActive) {
-                fail();
-            } else {
-                success();
-            }
+            return false;
         }
 
-        function fail() {
-            mainBox.classList.add('error-mode', 'shaking');
-            msg.style.color = "#ff5252";
-            msg.innerHTML = "⚠️ AdBlock Detected!";
-            document.getElementById('desc').innerText = "Please disable AdBlock to continue.";
-            
-            extraInstructions.innerHTML = `
-                <div class="instructions">
-                    If you already disabled AdBlock and still see this:<br>
-                    1. Disable <b>Tracking Prevention</b> in browser settings.<br>
-                    2. Or add this URL to your <b>Safe List/Exceptions</b>.
-                </div>
-            `;
-            
-            unlockLink.classList.remove('active-btn');
-        }
-
-        function success() {
-            mainBox.classList.remove('error-mode');
-            msg.style.color = "#00e676";
-            msg.innerText = "✓ Browser Verified. Click to proceed.";
-            document.getElementById('desc').innerText = "Security check passed.";
-            extraInstructions.innerHTML = ""; 
-            unlockLink.classList.add('active-btn');
-        }
-
-        function startCountdown() {
-            unlockLink.classList.remove('active-btn');
-            unlockLink.style.opacity = "0.3";
-            unlockLink.style.pointerEvents = "none";
-            
-            msg.innerText = "Ad opened. Verifying support... (5s)";
-            
-            let time = 5;
-            const timer = setInterval(() => {
-                time--;
-                msg.innerText = "Redirecting back to SyncPlay in " + time + "s";
-                
-                if (time <= 0) {
-                    clearInterval(timer);
-                    const urlParams = new URLSearchParams(window.location.search);
-                    let extId = urlParams.get('extId') || "eklimlgbcncdmdgqbjljbniaeljalcoj";
-                    
-                    window.location.href = `chrome-extension://${extId}/success.html?verified=true`;
+        function startTimer() {
+            if (timerInterval || timeLeft <= 0) return;
+            timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerEl.textContent = `Remaining: ${timeLeft}s`;
+                } else {
+                    clearInterval(timerInterval);
+                    timerEl.style.display = 'none';
+                    unlockBtn.style.display = 'block';
                 }
             }, 1000);
         }
 
-        window.onload = () => setTimeout(advancedDetection, 1200);
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        // Handle Tab Visibility (Security Feature)
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                startTimer();
+            } else {
+                pauseTimer();
+            }
+        });
+
+        // Initialize timer if tab is active
+        if (document.visibilityState === "visible") startTimer();
+
+        unlockBtn.addEventListener('click', () => {
+            if (!extId) {
+                alert("Extension Context Missing!");
+                return;
+            }
+
+            // Securely notify the extension via externally_connectable
+            chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (response) => {
+                if (chrome.runtime.lastError) {
+                    alert("Connection failed. Please ensure the extension is active.");
+                } else {
+                    document.body.innerHTML = `
+                        <div class='container'>
+                            <h2 style='color:#03dac6'>Step Completed! ✅</h2>
+                            <p>Reward granted. You can now close this tab and create your room.</p>
+                        </div>`;
+                }
+            });
+        });
+
+        // Verification check after 1.5s
+        setTimeout(() => {
+            if (checkAdBlock()) pauseTimer();
+        }, 1500);
     </script>
 </body>
 </html>
