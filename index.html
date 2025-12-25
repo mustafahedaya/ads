@@ -3,65 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Required</title>
+    <title>Verification Successful</title>
     <style>
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: #0f0f0f;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: #0d0d0d;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .card {
-            background: #1a1a1a;
+            background: #161616;
             padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             width: 100%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid #333;
+            border: 1px solid #2a2a2a;
+            transition: all 0.5s ease;
         }
-        h2 { margin-bottom: 10px; }
-        p { color: #999; font-size: 0.9rem; margin-bottom: 2rem; }
+        .icon { font-size: 3.5rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
+        h2 { margin: 10px 0; font-size: 1.6rem; letter-spacing: -0.5px; }
+        p { color: #888; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
         
         .btn {
             display: inline-block;
             width: 100%;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
             border: none;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        #ad-btn {
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             background: linear-gradient(135deg, #6c5ce7, #a29bfe);
             color: white;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
         }
-        #claim-btn {
-            background: #00d1b2;
-            color: #000;
-            display: none;
-        }
-        #status-msg { margin-top: 20px; font-weight: 500; min-height: 24px; }
-        .error { color: #cf6679; }
-        .timer { color: #bb86fc; }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(108, 92, 231, 0.4); }
+        
+        #status-msg { margin-top: 20px; font-weight: 600; min-height: 30px; }
+        .timer-text { color: #bb86fc; font-family: monospace; font-size: 1.2rem; }
+        .error-text { color: #ff5252; background: rgba(255, 82, 82, 0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+        .success-text { color: #00f2fe; }
+
+        /* الأنميشن الخاص بالنجاح */
+        .celebrate { transform: scale(1.2); color: #00f2fe; }
     </style>
 </head>
 <body>
 
     <div class="card" id="main-card">
-        <div id="icon-area" style="font-size: 3rem; margin-bottom: 1rem;">🛡️</div>
-        <h2>Final Step</h2>
-        <p id="instruction-text">Click below to open the ad. You must keep the ad tab open for at least 5 seconds to verify the view.</p>
+        <div id="icon-box" class="icon">🚀</div>
+        <h2 id="title">Final Step</h2>
+        <p id="desc">Keep the ad window open for 5 seconds to automatically unlock your reward.</p>
 
-        <button id="ad-btn" class="btn">View Ad & Verify</button>
-        <button id="claim-btn" class="btn">Claim Reward ✅</button>
+        <button id="ad-btn" class="btn">View Ad & Continue</button>
 
         <div id="status-msg"></div>
     </div>
@@ -70,72 +72,73 @@
         const urlParams = new URLSearchParams(window.location.search);
         const extId = urlParams.get('extId');
         const adBtn = document.getElementById('ad-btn');
-        const claimBtn = document.getElementById('claim-btn');
         const statusMsg = document.getElementById('status-msg');
+        const iconBox = document.getElementById('icon-box');
         const adUrl = "https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16";
 
         let adWindow = null;
         let timeLeft = 5;
-        let checkInterval = null;
+        let monitorInterval = null;
 
         adBtn.addEventListener('click', () => {
-            // محاولة فتح الإعلان
             adWindow = window.open(adUrl, '_blank');
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
-                statusMsg.innerHTML = '<span class="error">Action Blocked! Please allow popups for this site.</span>';
+                statusMsg.innerHTML = '<div class="error-text">Popup Blocked! Please allow popups for this site to continue.</div>';
                 return;
             }
 
-            // تصفير الحالة والبدء
             adBtn.style.display = 'none';
-            timeLeft = 5;
-            statusMsg.innerHTML = `<span class="timer">Verifying... Keep ad tab open (${timeLeft}s)</span>`;
+            statusMsg.innerHTML = `Verifying: <span class="timer-text">${timeLeft}s</span>`;
             
             startMonitoring();
         });
 
         function startMonitoring() {
-            if (checkInterval) clearInterval(checkInterval);
+            if (monitorInterval) clearInterval(monitorInterval);
 
-            checkInterval = setInterval(() => {
-                // 1. التأكد أن النافذة لا تزال مفتوحة
+            monitorInterval = setInterval(() => {
                 if (!adWindow || adWindow.closed) {
-                    clearInterval(checkInterval);
-                    statusMsg.innerHTML = '<span class="error">Verification Failed: Ad tab was closed too early!</span>';
+                    clearInterval(monitorInterval);
+                    statusMsg.innerHTML = '<div class="error-text">Failed! Ad window closed too early. Try again.</div>';
                     adBtn.style.display = 'block';
-                    adBtn.textContent = 'Retry Verification';
+                    adBtn.textContent = 'Restart Verification';
+                    timeLeft = 5;
                     return;
                 }
 
-                // 2. تحديث التوقيت
                 timeLeft--;
                 if (timeLeft > 0) {
-                    statusMsg.innerHTML = `<span class="timer">Verifying... Keep ad tab open (${timeLeft}s)</span>`;
+                    statusMsg.innerHTML = `Verifying: <span class="timer-text">${timeLeft}s</span>`;
                 } else {
-                    // النجاح
-                    clearInterval(checkInterval);
-                    statusMsg.innerHTML = '<span style="color:#00d1b2">View Verified! You can close the ad tab now.</span>';
-                    claimBtn.style.display = 'block';
+                    clearInterval(monitorInterval);
+                    grantReward();
                 }
             }, 1000);
         }
 
-        claimBtn.addEventListener('click', () => {
-            if (!extId) return alert("Extension configuration missing.");
+        function grantReward() {
+            if (!extId) return;
 
+            statusMsg.innerHTML = '<span class="success-text">Verification Success! Granting reward...</span>';
+            
+            // إرسال الرسالة للإضافة
             chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (response) => {
-                if (chrome.runtime.lastError) {
-                    alert("Sync Error: Please ensure the extension is active.");
-                } else {
-                    document.getElementById('main-card').innerHTML = `
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-                        <h2 style="color:#00d1b2">Success!</h2>
-                        <p>Your room creation is now unlocked. You can close this page.</p>
-                    `;
-                }
+                const error = chrome.runtime.lastError;
+                
+                // تحديث الواجهة فوراً
+                iconBox.innerHTML = "✅";
+                iconBox.classList.add('celebrate');
+                document.getElementById('title').textContent = "Unlocked!";
+                document.getElementById('desc').textContent = "Reward granted successfully. Closing this window in 3 seconds...";
+                statusMsg.innerHTML = "";
+
+                // إغلاق التاب تلقائياً بعد 3 ثواني
+                setTimeout(() => {
+                    window.close();
+                }, 3000);
             });
-        });
+        }
     </script>
 </body>
 </html>
