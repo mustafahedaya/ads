@@ -39,13 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 2. Paddle Link (Optional Fallback)
-        const cardsLink = document.getElementById('cards-link');
-        if (cardsLink) {
-            const paddleCheckoutUrl = "https://buy.paddle.com/product/YOUR_PRODUCT_ID";
-            cardsLink.href = `${paddleCheckoutUrl}?passthrough=${userId}`;
-        }
-
     } else {
         if (displayId) {
             displayId.textContent = "Error: No User ID found. Please open from the extension.";
