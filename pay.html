@@ -173,14 +173,17 @@
             <div class="feature-item"><span>⭐</span> Exclusive Badge & Support</div>
         </div>
 
-        <a id="stripe-link" href="#" class="btn-pay btn-stripe">Pay with Credit Card / Apple / Google Pay</a>
-        <a id="paypal-link" href="#" class="btn-pay btn-paypal">Pay with PayPal</a>
+        <div id="paypal-button-container-P-3VB288152L6027506NFGODOY" style="margin-bottom: 20px;"></div>
+        <a id="cards-link" href="#" class="btn-pay btn-paypal">Credit / Debit Cards (Global)</a>
 
         <div class="user-id-badge" id="display-user-id">ID: fetching...</div>
 
         <p class="footer-note">Automatic activation after payment. Monthly recurring subscription. Cancel anytime.</p>
     </div>
 
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRDNTFC536xpI5ZJzMn_3ZTB&vault=true&intent=subscription"
+        data-sdk-integration-source="button-factory"></script>
     <script>
         // Extract userId from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -189,17 +192,33 @@
         if (userId) {
             document.getElementById('display-user-id').textContent = "Target ID: " + userId;
 
-            // UPDATE THESE LINKS with your actual Stripe Payment Link and PayPal Subscription Link
-            // To pass the userId to Stripe, you can use: https://buy.stripe.com/abc?client_reference_id=YOUR_USER_ID
-            const stripeBaseUrl = "https://buy.stripe.com/YOUR_STRIPE_ID";
-            const paypalBaseUrl = "https://www.paypal.com/billing/plans/YOUR_PLAN_ID";
+            // 1. PayPal SDK Integration
+            paypal.Buttons({
+                style: {
+                    shape: 'pill',
+                    color: 'blue',
+                    layout: 'vertical',
+                    label: 'subscribe'
+                },
+                createSubscription: function (data, actions) {
+                    return actions.subscription.create({
+                        plan_id: 'P-3VB288152L6027506NFGODOY',
+                        custom_id: userId // هذا هو الجزء الأهم لربط الدفع بالمستخدم
+                    });
+                },
+                onApprove: function (data, actions) {
+                    alert("Subscription successful! ID: " + data.subscriptionID + "\nYour Pro status will be active in a few seconds.");
+                    window.close(); // إغلاق الصفحة بعد النجاح
+                }
+            }).render('#paypal-button-container-P-3VB288152L6027506NFGODOY');
 
-            document.getElementById('stripe-link').href = `${stripeBaseUrl}?client_reference_id=${userId}`;
-            document.getElementById('paypal-link').href = `${paypalBaseUrl}&custom=${userId}`;
+            // 2. Paddle Link (Optional Fallback)
+            const paddleCheckoutUrl = "https://buy.paddle.com/product/YOUR_PRODUCT_ID";
+            document.getElementById('cards-link').href = `${paddleCheckoutUrl}?passthrough=${userId}`;
+
         } else {
             document.getElementById('display-user-id').textContent = "Error: No User ID found. Please open from the extension.";
-            document.getElementById('stripe-link').style.opacity = "0.5";
-            document.getElementById('stripe-link').style.pointerEvents = "none";
+            document.getElementById('display-user-id').style.color = "#ff5252";
         }
     </script>
 </body>
