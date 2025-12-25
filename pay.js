@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 createSubscription: function (data, actions) {
                     return actions.subscription.create({
                         plan_id: 'P-3VB288152L6027506NFGODOY',
-                        custom_id: userId
+                        custom_id: userId,
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING'
+                        }
                     });
                 },
                 onApprove: function (data, actions) {
