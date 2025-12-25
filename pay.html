@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncPlay Pro - Upgrade</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --neon-teal: #03dac6;
+            --neon-purple: #bb86fc;
+            --neon-gold: #ffd700;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 90%;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-teal), var(--neon-purple), var(--neon-gold));
+            z-index: -1;
+            border-radius: 26px;
+            opacity: 0.3;
+            filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--neon-teal), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            text-align: left;
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .feature-item span {
+            margin-right: 15px;
+            color: var(--neon-teal);
+            font-size: 1.2rem;
+        }
+
+        .price-tag {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--neon-gold);
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .price-tag span {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .btn-pay {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .btn-stripe {
+            background: var(--neon-teal);
+            color: #000;
+            box-shadow: 0 0 20px rgba(3, 218, 198, 0.4);
+        }
+
+        .btn-stripe:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(3, 218, 198, 0.6);
+        }
+
+        .btn-paypal {
+            background: transparent;
+            border: 2px solid #0070ba;
+            color: #0070ba;
+        }
+
+        .user-id-badge {
+            font-size: 0.8rem;
+            color: #555;
+            margin-top: 20px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .footer-note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SyncPlay Pro</h1>
+        <p class="subtitle">Take your watch party to the next level</p>
+
+        <div class="price-tag">$4.99<span>/month</span></div>
+
+        <div class="features">
+            <div class="feature-item"><span>🚀</span> Unlimited daily rooms</div>
+            <div class="feature-item"><span>🚫</span> No ads, ever</div>
+            <div class="feature-item"><span>🎙️</span> Premium Voice Quality</div>
+            <div class="feature-item"><span>⭐</span> Exclusive Badge & Support</div>
+        </div>
+
+        <a id="stripe-link" href="#" class="btn-pay btn-stripe">Pay with Credit Card / Apple / Google Pay</a>
+        <a id="paypal-link" href="#" class="btn-pay btn-paypal">Pay with PayPal</a>
+
+        <div class="user-id-badge" id="display-user-id">ID: fetching...</div>
+
+        <p class="footer-note">Automatic activation after payment. Monthly recurring subscription. Cancel anytime.</p>
+    </div>
+
+    <script>
+        // Extract userId from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+
+        if (userId) {
+            document.getElementById('display-user-id').textContent = "Target ID: " + userId;
+
+            // UPDATE THESE LINKS with your actual Stripe Payment Link and PayPal Subscription Link
+            // To pass the userId to Stripe, you can use: https://buy.stripe.com/abc?client_reference_id=YOUR_USER_ID
+            const stripeBaseUrl = "https://buy.stripe.com/YOUR_STRIPE_ID";
+            const paypalBaseUrl = "https://www.paypal.com/billing/plans/YOUR_PLAN_ID";
+
+            document.getElementById('stripe-link').href = `${stripeBaseUrl}?client_reference_id=${userId}`;
+            document.getElementById('paypal-link').href = `${paypalBaseUrl}&custom=${userId}`;
+        } else {
+            document.getElementById('display-user-id').textContent = "Error: No User ID found. Please open from the extension.";
+            document.getElementById('stripe-link').style.opacity = "0.5";
+            document.getElementById('stripe-link').style.pointerEvents = "none";
+        }
+    </script>
+</body>
+
+</html>
