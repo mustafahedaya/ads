@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Successful</title>
+    <title>SyncPlay - Verification</title>
+    
+    <!-- كود الإعلانات (المتسبب في المشكلة سابقاً داخل الإضافة) -->
+    <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
+    
     <style>
         body {
             font-family: 'Inter', -apple-system, system-ui, sans-serif;
@@ -52,7 +56,6 @@
         .error-text { color: #ff5252; background: rgba(255, 82, 82, 0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
         .success-text { color: #00f2fe; }
 
-        /* الأنميشن الخاص بالنجاح */
         .celebrate { transform: scale(1.2); color: #00f2fe; }
     </style>
 </head>
@@ -70,7 +73,9 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        // الحصول على معرف الإضافة من الرابط لضمان إرسال الرسالة للمكان الصحيح
         const extId = urlParams.get('extId');
+        
         const adBtn = document.getElementById('ad-btn');
         const statusMsg = document.getElementById('status-msg');
         const iconBox = document.getElementById('icon-box');
@@ -81,6 +86,7 @@
         let monitorInterval = null;
 
         adBtn.addEventListener('click', () => {
+            // فتح الإعلان في نافذة جديدة
             adWindow = window.open(adUrl, '_blank');
 
             if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
@@ -98,6 +104,7 @@
             if (monitorInterval) clearInterval(monitorInterval);
 
             monitorInterval = setInterval(() => {
+                // إذا تم إغلاق نافذة الإعلان قبل الوقت المحدد
                 if (!adWindow || adWindow.closed) {
                     clearInterval(monitorInterval);
                     statusMsg.innerHTML = '<div class="error-text">Failed! Ad window closed too early. Try again.</div>';
@@ -118,26 +125,35 @@
         }
 
         function grantReward() {
-            if (!extId) return;
+            if (!extId) {
+                statusMsg.innerHTML = '<div class="error-text">Error: Extension ID missing. Please open from the extension.</div>';
+                return;
+            }
 
             statusMsg.innerHTML = '<span class="success-text">Verification Success! Granting reward...</span>';
             
-            // إرسال الرسالة للإضافة
-            chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (response) => {
-                const error = chrome.runtime.lastError;
-                
-                // تحديث الواجهة فوراً
-                iconBox.innerHTML = "✅";
-                iconBox.classList.add('celebrate');
-                document.getElementById('title').textContent = "Unlocked!";
-                document.getElementById('desc').textContent = "Reward granted successfully. Closing this window in 3 seconds...";
-                statusMsg.innerHTML = "";
+            // إرسال رسالة "AD_COMPLETED" إلى الإضافة لمنح المكافأة
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (response) => {
+                    updateUIToSuccess();
+                });
+            } else {
+                // في حال لم يكن الكروم متاحاً (للتجربة من المتصفح العادي)
+                updateUIToSuccess();
+            }
+        }
 
-                // إغلاق التاب تلقائياً بعد 3 ثواني
-                setTimeout(() => {
-                    window.close();
-                }, 3000);
-            });
+        function updateUIToSuccess() {
+            iconBox.innerHTML = "✅";
+            iconBox.classList.add('celebrate');
+            document.getElementById('title').textContent = "Unlocked!";
+            document.getElementById('desc').textContent = "Reward granted successfully. Closing this window in 3 seconds...";
+            statusMsg.innerHTML = "";
+
+            // إغلاق النافذة تلقائياً
+            setTimeout(() => {
+                window.close();
+            }, 3000);
         }
     </script>
 </body>
