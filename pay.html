@@ -4,186 +4,793 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncPlay Pro - Upgrade</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
-        rel="stylesheet">
+    <title>SyncPlay PRO - Premium Upgrade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0a0a0c;
-            --neon-teal: #03dac6;
-            --neon-purple: #bb86fc;
-            --neon-gold: #ffd700;
-            --card-bg: rgba(255, 255, 255, 0.05);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f3460 100%);
+            color: #e0e0e0;
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 500px;
-            width: 90%;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
-        .container::before {
+        /* Animated Background */
+        body::before {
             content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--neon-teal), var(--neon-purple), var(--neon-gold));
-            z-index: -1;
-            border-radius: 26px;
-            opacity: 0.3;
-            filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            font-size: 14px;
+            font-weight: 800;
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, var(--neon-teal), var(--neon-purple));
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+            line-height: 1.2;
         }
 
-        .subtitle {
-            color: #aaa;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+        .hero-subtitle {
+            font-size: 20px;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
         }
 
-        .features {
-            text-align: left;
-            margin-bottom: 40px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease 0.2s both;
         }
 
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .feature-item span {
-            margin-right: 15px;
-            color: var(--neon-teal);
-            font-size: 1.2rem;
-        }
-
-        .price-tag {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--neon-gold);
-            margin-bottom: 10px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .price-tag span {
-            font-size: 1rem;
-            color: #888;
-        }
-
-        .btn-pay {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            border: none;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
             transition: all 0.3s ease;
-            text-decoration: none;
-            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-stripe {
-            background: var(--neon-teal);
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            max-width: 500px;
+            margin: 0 auto 60px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .popular-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #000;
-            box-shadow: 0 0 20px rgba(3, 218, 198, 0.4);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
         }
 
-        .btn-stripe:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(3, 218, 198, 0.6);
+        .price {
+            font-size: 60px;
+            font-weight: 800;
+            color: #FFD700;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
         }
 
-        .btn-paypal {
-            background: transparent;
-            border: 2px solid #0070ba;
-            color: #0070ba;
+        .price-period {
+            font-size: 18px;
+            color: #888;
+            font-weight: 400;
         }
 
-        .user-id-badge {
-            font-size: 0.8rem;
-            color: #555;
-            margin-top: 20px;
-            font-family: monospace;
-            word-break: break-all;
+        .price-description {
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
 
-        .footer-note {
-            font-size: 0.9rem;
+        /* PayPal Button Container */
+        #paypal-button-container {
+            margin: 30px 0;
+            min-height: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Email Input */
+        .email-section {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .email-section label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #FFD700;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        #user-email {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        #user-email:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        #user-email::placeholder {
             color: #666;
-            margin-top: 30px;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-message.success {
+            background: rgba(0, 200, 83, 0.2);
+            border: 1px solid rgba(0, 200, 83, 0.5);
+            color: #00c853;
+        }
+
+        .status-message.error {
+            background: rgba(207, 102, 121, 0.2);
+            border: 1px solid rgba(207, 102, 121, 0.5);
+            color: #cf6679;
+        }
+
+        .status-message.loading {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            color: #FFD700;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .comparison-table h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #FFD700;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-row.header {
+            font-weight: 700;
+            color: #FFD700;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .comparison-feature {
+            font-weight: 600;
+        }
+
+        .comparison-check {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .check-yes {
+            color: #00c853;
+        }
+
+        .check-no {
+            color: #cf6679;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .pricing-card {
+                padding: 30px;
+            }
+
+            .price {
+                font-size: 48px;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .comparison-feature {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>SyncPlay Pro</h1>
-        <p class="subtitle">Take your watch party to the next level</p>
-
-        <div class="price-tag">$4.99<span>/month</span></div>
-
-        <div class="features">
-            <div class="feature-item"><span>🚀</span> Unlimited daily rooms</div>
-            <div class="feature-item"><span>🚫</span> No ads, ever</div>
-            <div class="feature-item"><span>🎙️</span> Premium Voice Quality</div>
-            <div class="feature-item"><span>⭐</span> Exclusive Badge & Support</div>
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-badge">👑 PREMIUM</div>
+            <h1>Upgrade to SyncPlay PRO</h1>
+            <p class="hero-subtitle">
+                Unlock unlimited rooms, premium features, and an ad-free experience.
+                Join thousands of PRO users enjoying the ultimate sync experience.
+            </p>
         </div>
 
-        <div id="paypal-button-container-P-3VB288152L6027506NFGODOY" style="margin-bottom: 20px;"></div>
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🚀</span>
+                <h3>Unlimited Rooms</h3>
+                <p>Create unlimited sync rooms daily without any restrictions.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3>Priority Support</h3>
+                <p>Get priority customer support and faster response times.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎨</span>
+                <h3>Premium Themes</h3>
+                <p>Access exclusive themes and customization options.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Advanced Features</h3>
+                <p>Early access to new features and experimental tools.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Enhanced Privacy</h3>
+                <p>Private rooms with password protection and custom settings.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💎</span>
+                <h3>VIP Badge</h3>
+                <p>Show off your premium status with an exclusive VIP badge.</p>
+            </div>
+        </div>
 
-        <div class="user-id-badge" id="display-user-id">ID: fetching...</div>
+        <!-- Comparison Table -->
+        <div class="comparison-table">
+            <h2>Free vs PRO</h2>
+            <div class="comparison-row header">
+                <div>Feature</div>
+                <div>Free</div>
+                <div>PRO</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Daily Room Creation</div>
+                <div class="comparison-check">3 rooms</div>
+                <div class="comparison-check check-yes">Unlimited</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Video Sync</div>
+                <div class="comparison-check check-yes">✓</div>
+                <div class="comparison-check check-yes">✓</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Voice Chat</div>
+                <div class="comparison-check check-yes">✓</div>
+                <div class="comparison-check check-yes">✓</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Ads</div>
+                <div class="comparison-check check-yes">View ads for extra rooms</div>
+                <div class="comparison-check check-no">Ad-Free</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Premium Themes</div>
+                <div class="comparison-check check-no">✗</div>
+                <div class="comparison-check check-yes">✓</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Priority Support</div>
+                <div class="comparison-check check-no">✗</div>
+                <div class="comparison-check check-yes">✓</div>
+            </div>
+            <div class="comparison-row">
+                <div class="comparison-feature">Early Access</div>
+                <div class="comparison-check check-no">✗</div>
+                <div class="comparison-check check-yes">✓</div>
+            </div>
+        </div>
 
-        <p class="footer-note">Automatic activation after payment. Monthly recurring subscription. Cancel anytime.</p>
+        <!-- Pricing Section -->
+        <div class="pricing-section">
+            <div class="pricing-card">
+                <div class="popular-badge">⭐ MOST POPULAR</div>
+                <div class="price">
+                    $4.99
+                    <span class="price-period">/month</span>
+                </div>
+                <p class="price-description">
+                    Cancel anytime. No hidden fees. Instant activation.
+                </p>
+
+                <!-- Email Input -->
+                <div class="email-section">
+                    <label for="user-email">Your Email (for subscription recovery)</label>
+                    <input type="email" id="user-email" placeholder="email@example.com" autocomplete="email">
+                </div>
+
+                <!-- PayPal Button -->
+                <div id="paypal-button-container"></div>
+
+                <!-- Status Messages -->
+                <div id="status-message" class="status-message"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Secure payment powered by PayPal | Questions? Contact support@syncplay.com</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                Your subscription is tied to your email. Keep it safe to restore PRO status anytime.
+            </p>
+        </div>
     </div>
 
+    <!-- PayPal SDK -->
     <script
-        src="https://www.paypal.com/sdk/js?client-id=AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB&vault=true&intent=subscription"
-        data-sdk-integration-source="button-factory"></script>
-    <script src="pay.js"></script>
+        src="https://www.paypal.com/sdk/js?client-id=AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB&vault=true&intent=subscription"></script>
+
+    <!-- Pro Page Logic for Hosted Version -->
+    <script>
+        // PayPal Production Credentials
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
+
+        // Get extension ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const extensionId = urlParams.get('extId');
+        let userEmail = '';
+        let extensionUserId = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get user data from extension (if available)
+            if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                try {
+                    const response = await chrome.runtime.sendMessage(extensionId, { action: 'GET_USER_DATA' });
+                    if (response) {
+                        extensionUserId = response.userId;
+                        userEmail = response.email || '';
+                        if (userEmail) {
+                            document.getElementById('user-email').value = userEmail;
+                            checkProStatus();
+                        }
+                    }
+                } catch (e) {
+                    console.log('Could not connect to extension:', e);
+                }
+            }
+
+            // If no ext connection, generate local ID
+            if (!extensionUserId) {
+                extensionUserId = localStorage.getItem('temp_user_id') || generateUserId();
+                localStorage.setItem('temp_user_id', extensionUserId);
+            }
+
+            // Email input listener
+            document.getElementById('user-email').addEventListener('change', (e) => {
+                userEmail = e.target.value.trim();
+                if (validateEmail(userEmail)) {
+                    localStorage.setItem('pro_email', userEmail);
+                }
+            });
+
+            // Auto-check on page load if email exists
+            const savedEmail = localStorage.getItem('pro_email');
+            if (savedEmail) {
+                document.getElementById('user-email').value = savedEmail;
+                checkProStatus();
+            }
+        });
+
+        function generateUserId() {
+            return 'web_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status-message');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type}`;
+            statusEl.style.display = 'block';
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        async function checkProStatus() {
+            try {
+                const email = document.getElementById('user-email').value.trim();
+                if (!email || !validateEmail(email)) {
+                    return;
+                }
+
+                const response = await fetch(
+                    `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
+                );
+
+                const data = await response.json();
+
+                if (data.isPro) {
+                    showStatus('✓ You already have an active PRO subscription!', 'success');
+
+                    // Notify extension if connected
+                    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                        try {
+                            chrome.runtime.sendMessage(extensionId, {
+                                action: 'UPDATE_PRO_STATUS',
+                                isPro: true,
+                                email: email,
+                                expiryDate: data.expiryDate
+                            });
+                        } catch (e) {
+                            console.log('Could not notify extension:', e);
+                        }
+                    }
+
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Status check failed:', error);
+            }
+        }
+
+        // PayPal Integration
+        if (typeof paypal !== 'undefined') {
+            paypal.Buttons({
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'rect',
+                    label: 'subscribe'
+                },
+
+                createSubscription: function (data, actions) {
+                    const email = document.getElementById('user-email').value.trim();
+                    if (!email || !validateEmail(email)) {
+                        showStatus('Please enter a valid email address', 'error');
+                        return Promise.reject(new Error('Invalid email'));
+                    }
+
+                    localStorage.setItem('pro_email', email);
+                    userEmail = email;
+
+                    showStatus('Creating subscription...', 'loading');
+
+                    return actions.subscription.create({
+                        'plan_id': 'P-3VB288152L6027506NFGODOY',
+                        'custom_id': JSON.stringify({
+                            userId: extensionUserId,
+                            email: userEmail
+                        })
+                    });
+                },
+
+                onApprove: async function (data, actions) {
+                    showStatus('Processing payment...', 'loading');
+
+                    try {
+                        const subscriptionData = {
+                            subscriptionID: data.subscriptionID,
+                            orderID: data.orderID,
+                            userId: extensionUserId,
+                            email: userEmail,
+                            timestamp: new Date().toISOString()
+                        };
+
+                        await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                action: 'record_subscription',
+                                data: subscriptionData
+                            })
+                        });
+
+                        // Notify extension
+                        if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                            try {
+                                chrome.runtime.sendMessage(extensionId, {
+                                    action: 'UPDATE_PRO_STATUS',
+                                    isPro: true,
+                                    email: userEmail,
+                                    subscriptionId: data.subscriptionID,
+                                    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                                });
+                            } catch (e) {
+                                console.log('Could not notify extension:', e);
+                            }
+                        }
+
+                        showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
+
+                        setTimeout(() => {
+                            window.close();
+                        }, 3000);
+
+                    } catch (error) {
+                        console.error('Subscription recording failed:', error);
+                        showStatus('Payment successful! Check your email for confirmation.', 'success');
+                    }
+                },
+
+                onError: function (err) {
+                    console.error('PayPal error:', err);
+                    showStatus('Payment failed. Please try again or contact support.', 'error');
+                },
+
+                onCancel: function (data) {
+                    showStatus('Payment cancelled. You can try again anytime.', 'error');
+                }
+
+            }).render('#paypal-button-container');
+        } else {
+            document.getElementById('paypal-button-container').innerHTML =
+                '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+        }
+    </script>
 </body>
 
 </html>
