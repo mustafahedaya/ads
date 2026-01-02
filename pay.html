@@ -543,10 +543,6 @@
         </div>
     </div>
 
-    <!-- PayPal SDK (Sandbox) -->
-    <script
-        src="https://www.paypal.com/sdk/js?client-id=AYQw_tuPw_U7huZLlqcN_frAKk3XIqBRFEy7-HiYIQDWmdpvsRSrc5eFDHLN4b2qVtbYX3ABzPXgc1_I&vault=true&intent=subscription"></script>
-
     <!-- Pro Page Logic for Hosted Version -->
     <script>
         // PayPal Configuration
@@ -565,6 +561,23 @@
         const GOOGLE_SCRIPT_URL =
             'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
 
+        // Dynamic PayPal SDK Loading
+        function loadPayPalSDK() {
+            return new Promise((resolve, reject) => {
+                const clientId = PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.clientIds.sandbox : PAYPAL_CONFIG.clientIds.live;
+                const script = document.createElement('script');
+                script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription`;
+                script.onload = resolve;
+                script.onerror = () => {
+                    console.error('Failed to load PayPal SDK');
+                    document.getElementById('paypal-button-container').innerHTML =
+                        '<p style="color: #cf6679;">PayPal is currently unavailable. Please verify your Client ID and refresh.</p>';
+                    reject();
+                };
+                document.head.appendChild(script);
+            });
+        }
+
         // Get extension ID from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const extensionId = urlParams.get('extId');
@@ -573,6 +586,14 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
+            // Load PayPal SDK first
+            try {
+                await loadPayPalSDK();
+                initPayPalButtons();
+            } catch (e) {
+                console.error('PayPal Initialization failed:', e);
+            }
+
             // Get user data from extension (if available)
             if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
                 try {
@@ -673,105 +694,108 @@
         }
 
         // PayPal Integration
-        if (typeof paypal !== 'undefined') {
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'gold',
-                    shape: 'rect',
-                    label: 'subscribe'
-                },
+        function initPayPalButtons() {
+            if (typeof paypal !== 'undefined') {
+                paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'subscribe'
+                    },
 
-                createSubscription: function (data, actions) {
-                    const email = document.getElementById('user-email').value.trim();
-                    if (!email || !validateEmail(email)) {
-                        showStatus('Please enter a valid email address', 'error');
-                        return Promise.reject(new Error('Invalid email'));
-                    }
-
-                    localStorage.setItem('pro_email', email);
-                    userEmail = email;
-
-                    showStatus('Creating subscription...', 'loading');
-
-                    return actions.subscription.create({
-                        'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
-                        'application_context': {
-                            'shipping_preference': 'NO_SHIPPING',
-                            'user_action': 'SUBSCRIBE_NOW'
-                        },
-                        'custom_id': JSON.stringify({
-                            userId: extensionUserId,
-                            email: userEmail
-                        })
-                    });
-                },
-
-                onApprove: async function (data, actions) {
-                    showStatus('Processing payment...', 'loading');
-
-                    try {
-                        const subscriptionData = {
-                            subscriptionID: data.subscriptionID,
-                            orderID: data.orderID,
-                            userId: extensionUserId,
-                            email: userEmail,
-                            timestamp: new Date().toISOString()
-                        };
-
-                        await fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'record_subscription',
-                                data: subscriptionData
-                            })
-                        });
-
-                        // Notify extension
-                        if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                            try {
-                                chrome.runtime.sendMessage(extensionId, {
-                                    action: 'UPDATE_PRO_STATUS',
-                                    isPro: true,
-                                    email: userEmail,
-                                    subscriptionId: data.subscriptionID,
-                                    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                                });
-                            } catch (e) {
-                                console.log('Could not notify extension:', e);
-                            }
+                    createSubscription: function (data, actions) {
+                        const email = document.getElementById('user-email').value.trim();
+                        if (!email || !validateEmail(email)) {
+                            showStatus('Please enter a valid email address', 'error');
+                            return Promise.reject(new Error('Invalid email'));
                         }
 
-                        showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
+                        localStorage.setItem('pro_email', email);
+                        userEmail = email;
 
-                        setTimeout(() => {
-                            window.close();
-                        }, 3000);
+                        showStatus('Creating subscription...', 'loading');
 
-                    } catch (error) {
-                        console.error('Subscription recording failed:', error);
-                        showStatus('Payment successful! Check your email for confirmation.', 'success');
+                        return actions.subscription.create({
+                            'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
+                            'application_context': {
+                                'shipping_preference': 'NO_SHIPPING',
+                                'user_action': 'SUBSCRIBE_NOW'
+                            },
+                            'custom_id': JSON.stringify({
+                                userId: extensionUserId,
+                                email: userEmail
+                            })
+                        });
+                    },
+
+                    onApprove: async function (data, actions) {
+                        showStatus('Processing payment...', 'loading');
+
+                        try {
+                            const subscriptionData = {
+                                subscriptionID: data.subscriptionID,
+                                orderID: data.orderID,
+                                userId: extensionUserId,
+                                email: userEmail,
+                                timestamp: new Date().toISOString()
+                            };
+
+                            await fetch(GOOGLE_SCRIPT_URL, {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    action: 'record_subscription',
+                                    data: subscriptionData
+                                })
+                            });
+
+                            // Notify extension
+                            if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                                try {
+                                    chrome.runtime.sendMessage(extensionId, {
+                                        action: 'UPDATE_PRO_STATUS',
+                                        isPro: true,
+                                        email: userEmail,
+                                        subscriptionId: data.subscriptionID,
+                                        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                                    });
+                                } catch (e) {
+                                    console.log('Could not notify extension:', e);
+                                }
+                            }
+
+                            showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
+
+                            setTimeout(() => {
+                                window.close();
+                            }, 3000);
+
+                        } catch (error) {
+                            console.error('Subscription recording failed:', error);
+                            showStatus('Payment successful! Check your email for confirmation.', 'success');
+                        }
+                    },
+
+                    onError: function (err) {
+                        console.error('PayPal error:', err);
+                        showStatus('Payment failed. Please try again or contact support.', 'error');
+                    },
+
+                    onCancel: function (data) {
+                        showStatus('Payment cancelled. You can try again anytime.', 'error');
                     }
-                },
 
-                onError: function (err) {
-                    console.error('PayPal error:', err);
-                    showStatus('Payment failed. Please try again or contact support.', 'error');
-                },
-
-                onCancel: function (data) {
-                    showStatus('Payment cancelled. You can try again anytime.', 'error');
-                }
-
-            }).render('#paypal-button-container');
-        } else {
-            document.getElementById('paypal-button-container').innerHTML =
-                '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+                }).render('#paypal-button-container');
+            } else {
+                document.getElementById('paypal-button-container').innerHTML =
+                    '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+            }
         }
+    </script>
     </script>
 </body>
 
