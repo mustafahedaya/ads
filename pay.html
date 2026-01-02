@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="supabase-client.js"></script>
     <style>
         * {
             margin: 0;
@@ -581,9 +582,6 @@
                 }
             };
 
-            const GOOGLE_SCRIPT_URL =
-                'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
-
             // Dynamic PayPal SDK Loading
             function loadPayPalSDK() {
                 return new Promise((resolve, reject) => {
@@ -684,11 +682,8 @@
                         return;
                     }
 
-                    const response = await fetch(
-                        `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
-                    );
-
-                    const data = await response.json();
+                    // CHECK WITH SUPABASE
+                    const data = await supabase.checkSubscription(email);
 
                     if (data.isPro) {
                         showStatus('✓ You already have an active PRO subscription!', 'success');
@@ -766,18 +761,8 @@
                                     timestamp: new Date().toISOString()
                                 };
 
-                                // Record in Google Sheets
-                                fetch(GOOGLE_SCRIPT_URL, {
-                                    method: 'POST',
-                                    mode: 'no-cors',
-                                    headers: {
-                                        'Content-Type': 'text/plain',
-                                    },
-                                    body: JSON.stringify({
-                                        action: 'record_subscription',
-                                        data: subscriptionData
-                                    })
-                                }).catch(e => console.error('Silent GAS recording failure:', e));
+                                // Record in Supabase
+                                await supabase.recordSubscription(subscriptionData);
 
                                 // Notify extension
                                 if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
