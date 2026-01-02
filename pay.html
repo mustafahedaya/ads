@@ -517,7 +517,7 @@
                     <span class="price-period">/month</span>
                 </div>
                 <p class="price-description">
-                    
+                    Cancel anytime. No hidden fees. Instant activation.
                 </p>
 
                 <!-- Email Input -->
@@ -683,6 +683,9 @@
 
                     return actions.subscription.create({
                         'plan_id': 'P-3VB288152L6027506NFGODOY',
+                        'application_context': {
+                            'shipping_preference': 'NO_SHIPPING'
+                        },
                         'custom_id': JSON.stringify({
                             userId: extensionUserId,
                             email: userEmail
