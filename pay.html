@@ -707,9 +707,9 @@
                             }
                         }
 
-                        setTimeout(() => {
-                            window.close();
-                        }, 2000);
+                        // We show the message but DO NOT auto-close.
+                        // This allows the user to see the status and avoids frustration
+                        // if they are trying to manage their account or testing.
                     }
                 } catch (error) {
                     console.error('Status check failed:', error);
