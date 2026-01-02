@@ -15,6 +15,14 @@
             box-sizing: border-box;
         }
 
+        [id$="-view"] {
+            display: none;
+        }
+
+        #main-view {
+            display: block;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f3460 100%);
@@ -454,349 +462,368 @@
 
 <body>
     <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <div class="hero-badge">👑 PREMIUM</div>
-            <h1>Upgrade to SyncPlay PRO</h1>
-            <p class="hero-subtitle">
-                Create unlimited rooms daily and enjoy an ad-free experience!
-                No more restrictions. No more interruptions.
+        <!-- Success View (Initially Hidden) -->
+        <div id="success-view" style="text-align: center; padding: 60px 20px; animation: fadeInUp 0.8s ease;">
+            <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
+            <h1 style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">Payment Successful!</h1>
+            <p style="font-size: 20px; color: #b0b0b0; max-width: 600px; margin: 0 auto 40px; line-height: 1.6;">
+                Your SyncPlay PRO subscription is now active.
+                You can now create unlimited rooms and enjoy an ad-free experience!
             </p>
+            <button onclick="window.close()"
+                style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; padding: 18px 45px; border-radius: 35px; color: #000; font-weight: 800; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); transition: transform 0.2s ease;">
+                Return to Extension
+            </button>
         </div>
 
-        <!-- Features Grid -->
-        <div class="features-grid">
-            <div class="feature-card">
-                <span class="feature-icon">🚀</span>
-                <h3>Unlimited Rooms</h3>
-                <p>Create unlimited sync rooms daily without any restrictions. No more 3-rooms limit!</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">�</span>
-                <h3>Ad-Free Experience</h3>
-                <p>No more ads! Enjoy seamless video watching with your friends without interruptions.</p>
-            </div>
-        </div>
-
-        <!-- Comparison Table -->
-        <div class="comparison-table">
-            <h2>Free vs PRO</h2>
-            <div class="comparison-row header">
-                <div>Feature</div>
-                <div>Free</div>
-                <div>PRO</div>
-            </div>
-            <div class="comparison-row">
-                <div class="comparison-feature">Daily Room Creation</div>
-                <div class="comparison-check">3 rooms</div>
-                <div class="comparison-check check-yes">Unlimited</div>
-            </div>
-            <div class="comparison-row">
-                <div class="comparison-feature">Video Sync</div>
-                <div class="comparison-check check-yes">✓</div>
-                <div class="comparison-check check-yes">✓</div>
-            </div>
-            <div class="comparison-row">
-                <div class="comparison-feature">Voice Chat</div>
-                <div class="comparison-check check-yes">✓</div>
-                <div class="comparison-check check-yes">✓</div>
-            </div>
-            <div class="comparison-row">
-                <div class="comparison-feature">Ads</div>
-                <div class="comparison-check check-yes">View ads for extra rooms</div>
-                <div class="comparison-check check-no">Ad-Free</div>
-            </div>
-        </div>
-
-        <!-- Pricing Section -->
-        <div class="pricing-section">
-            <div class="pricing-card">
-                <div class="popular-badge">⭐ MOST POPULAR</div>
-                <div class="price">
-                    $4.99
-                    <span class="price-period">/month</span>
-                </div>
-                <p class="price-description">
-                    Cancel anytime. No hidden fees. Instant activation.
+        <div id="main-view">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="hero-badge">👑 PREMIUM</div>
+                <h1>Upgrade to SyncPlay PRO</h1>
+                <p class="hero-subtitle">
+                    Create unlimited rooms daily and enjoy an ad-free experience!
+                    No more restrictions. No more interruptions.
                 </p>
+            </div>
 
-                <!-- Email Input -->
-                <div class="email-section">
-                    <label for="user-email">Your Email (for subscription recovery)</label>
-                    <input type="email" id="user-email" placeholder="email@example.com" autocomplete="email">
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🚀</span>
+                    <h3>Unlimited Rooms</h3>
+                    <p>Create unlimited sync rooms daily without any restrictions. No more 3-rooms limit!</p>
                 </div>
+                <div class="feature-card">
+                    <span class="feature-icon">�</span>
+                    <h3>Ad-Free Experience</h3>
+                    <p>No more ads! Enjoy seamless video watching with your friends without interruptions.</p>
+                </div>
+            </div>
 
-                <!-- PayPal Button -->
-                <div id="paypal-button-container"></div>
+            <!-- Comparison Table -->
+            <div class="comparison-table">
+                <h2>Free vs PRO</h2>
+                <div class="comparison-row header">
+                    <div>Feature</div>
+                    <div>Free</div>
+                    <div>PRO</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Daily Room Creation</div>
+                    <div class="comparison-check">3 rooms</div>
+                    <div class="comparison-check check-yes">Unlimited</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Video Sync</div>
+                    <div class="comparison-check check-yes">✓</div>
+                    <div class="comparison-check check-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Voice Chat</div>
+                    <div class="comparison-check check-yes">✓</div>
+                    <div class="comparison-check check-yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Ads</div>
+                    <div class="comparison-check check-yes">View ads for extra rooms</div>
+                    <div class="comparison-check check-no">Ad-Free</div>
+                </div>
+            </div>
 
-                <!-- Status Messages -->
-                <div id="status-message" class="status-message"></div>
+            <!-- Pricing Section -->
+            <div class="pricing-section">
+                <div class="pricing-card">
+                    <div class="popular-badge">⭐ MOST POPULAR</div>
+                    <div class="price">
+                        $4.99
+                        <span class="price-period">/month</span>
+                    </div>
+                    <p class="price-description">
+                        Cancel anytime. No hidden fees. Instant activation.
+                    </p>
+
+                    <!-- Email Input -->
+                    <div class="email-section">
+                        <label for="user-email">Your Email (for subscription recovery)</label>
+                        <input type="email" id="user-email" placeholder="email@example.com" autocomplete="email">
+                    </div>
+
+                    <!-- PayPal Button -->
+                    <div id="paypal-button-container"></div>
+
+                    <!-- Status Messages -->
+                    <div id="status-message" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Secure payment powered by PayPal | Questions? Contact support@syncplay.com</p>
+                <p style="margin-top: 10px; font-size: 12px;">
+                    Your subscription is tied to your email. Keep it safe to restore PRO status anytime.
+                </p>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>Secure payment powered by PayPal | Questions? Contact support@syncplay.com</p>
-            <p style="margin-top: 10px; font-size: 12px;">
-                Your subscription is tied to your email. Keep it safe to restore PRO status anytime.
-            </p>
-        </div>
-    </div>
+        <!-- Pro Page Logic for Hosted Version -->
+        <script>
+            // PayPal Configuration
+            const PAYPAL_CONFIG = {
+                isSandbox: true, // SET TO false FOR PRODUCTION
+                clientIds: {
+                    sandbox: 'AYQw_tuPw_U7huZLiqcN_frAKk3XlqBRFEy7-HIYIQdWMdpvRSRc5eFDHLN4b2qVtbYX3AbZPXgc1_Iu',
+                    live: 'AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB'
+                },
+                planIds: {
+                    sandbox: 'P-75S77380MM398401NNFMEDPQ', // New US Sandbox Plan ID
+                    live: 'P-3VB288152L6027506NFGODOY'
+                }
+            };
 
-    <!-- Pro Page Logic for Hosted Version -->
-    <script>
-        // PayPal Configuration
-        const PAYPAL_CONFIG = {
-            isSandbox: true, // SET TO false FOR PRODUCTION
-            clientIds: {
-                sandbox: 'AYQw_tuPw_U7huZLiqcN_frAKk3XlqBRFEy7-HIYIQdWMdpvRSRc5eFDHLN4b2qVtbYX3AbZPXgc1_Iu',
-                live: 'AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB'
-            },
-            planIds: {
-                sandbox: 'P-75S77380MM398401NNFMEDPQ', // New US Sandbox Plan ID
-                live: 'P-3VB288152L6027506NFGODOY'
-            }
-        };
+            const GOOGLE_SCRIPT_URL =
+                'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
 
-        const GOOGLE_SCRIPT_URL =
-            'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
-
-        // Dynamic PayPal SDK Loading
-        function loadPayPalSDK() {
-            return new Promise((resolve, reject) => {
-                const clientId = PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.clientIds.sandbox : PAYPAL_CONFIG.clientIds.live;
-                const script = document.createElement('script');
-                script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription`;
-                script.onload = resolve;
-                script.onerror = () => {
-                    console.error('Failed to load PayPal SDK');
-                    document.getElementById('paypal-button-container').innerHTML =
-                        '<p style="color: #cf6679;">PayPal is currently unavailable. Please verify your Client ID and refresh.</p>';
-                    reject();
-                };
-                document.head.appendChild(script);
-            });
-        }
-
-        // Get extension ID from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const extensionId = urlParams.get('extId');
-        let userEmail = '';
-        let extensionUserId = '';
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Load PayPal SDK first
-            try {
-                await loadPayPalSDK();
-                initPayPalButtons();
-            } catch (e) {
-                console.error('PayPal Initialization failed:', e);
+            // Dynamic PayPal SDK Loading
+            function loadPayPalSDK() {
+                return new Promise((resolve, reject) => {
+                    const clientId = PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.clientIds.sandbox : PAYPAL_CONFIG.clientIds.live;
+                    const script = document.createElement('script');
+                    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription`;
+                    script.onload = resolve;
+                    script.onerror = () => {
+                        console.error('Failed to load PayPal SDK');
+                        document.getElementById('paypal-button-container').innerHTML =
+                            '<p style="color: #cf6679;">PayPal is currently unavailable. Please verify your Client ID and refresh.</p>';
+                        reject();
+                    };
+                    document.head.appendChild(script);
+                });
             }
 
-            // Get user data from extension (if available)
-            if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+            // Get extension ID from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const extensionId = urlParams.get('extId');
+            let userEmail = '';
+            let extensionUserId = '';
+
+            // Initialize
+            document.addEventListener('DOMContentLoaded', async () => {
+                // Load PayPal SDK first
                 try {
-                    const response = await chrome.runtime.sendMessage(extensionId, { action: 'GET_USER_DATA' });
-                    if (response) {
-                        extensionUserId = response.userId;
-                        userEmail = response.email || '';
-                        if (userEmail) {
-                            document.getElementById('user-email').value = userEmail;
-                            checkProStatus();
-                        }
-                    }
+                    await loadPayPalSDK();
+                    initPayPalButtons();
                 } catch (e) {
-                    console.log('Could not connect to extension:', e);
+                    console.error('PayPal Initialization failed:', e);
                 }
-            }
 
-            // If no ext connection, generate local ID
-            if (!extensionUserId) {
-                extensionUserId = localStorage.getItem('temp_user_id') || generateUserId();
-                localStorage.setItem('temp_user_id', extensionUserId);
-            }
+                // Get user data from extension (if available)
+                if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                    try {
+                        const response = await chrome.runtime.sendMessage(extensionId, { action: 'GET_USER_DATA' });
+                        if (response) {
+                            extensionUserId = response.userId;
+                            userEmail = response.email || '';
+                            if (userEmail) {
+                                document.getElementById('user-email').value = userEmail;
+                                checkProStatus();
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Could not connect to extension:', e);
+                    }
+                }
 
-            // Email input listener
-            document.getElementById('user-email').addEventListener('change', (e) => {
-                userEmail = e.target.value.trim();
-                if (validateEmail(userEmail)) {
-                    localStorage.setItem('pro_email', userEmail);
+                // If no ext connection, generate local ID
+                if (!extensionUserId) {
+                    extensionUserId = localStorage.getItem('temp_user_id') || generateUserId();
+                    localStorage.setItem('temp_user_id', extensionUserId);
+                }
+
+                // Email input listener
+                document.getElementById('user-email').addEventListener('change', (e) => {
+                    userEmail = e.target.value.trim();
+                    if (validateEmail(userEmail)) {
+                        localStorage.setItem('pro_email', userEmail);
+                    }
+                });
+
+                // Auto-check on page load if email exists
+                const savedEmail = localStorage.getItem('pro_email');
+                if (savedEmail) {
+                    document.getElementById('user-email').value = savedEmail;
+                    checkProStatus();
                 }
             });
 
-            // Auto-check on page load if email exists
-            const savedEmail = localStorage.getItem('pro_email');
-            if (savedEmail) {
-                document.getElementById('user-email').value = savedEmail;
-                checkProStatus();
+            function generateUserId() {
+                return 'web_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
             }
-        });
 
-        function generateUserId() {
-            return 'web_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-        }
-
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = message;
-            statusEl.className = `status-message ${type}`;
-            statusEl.style.display = 'block';
-
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusEl.style.display = 'none';
-                }, 5000);
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
-        }
 
-        async function checkProStatus() {
-            try {
-                const email = document.getElementById('user-email').value.trim();
-                if (!email || !validateEmail(email)) {
-                    return;
+            function showStatus(message, type) {
+                const statusEl = document.getElementById('status-message');
+                statusEl.textContent = message;
+                statusEl.className = `status-message ${type}`;
+                statusEl.style.display = 'block';
+
+                if (type === 'success') {
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 5000);
                 }
+            }
 
-                const response = await fetch(
-                    `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
-                );
-
-                const data = await response.json();
-
-                if (data.isPro) {
-                    showStatus('✓ You already have an active PRO subscription!', 'success');
-
-                    // Notify extension if connected
-                    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                        try {
-                            chrome.runtime.sendMessage(extensionId, {
-                                action: 'UPDATE_PRO_STATUS',
-                                isPro: true,
-                                email: email,
-                                expiryDate: data.expiryDate
-                            });
-                        } catch (e) {
-                            console.log('Could not notify extension:', e);
-                        }
+            async function checkProStatus() {
+                try {
+                    const email = document.getElementById('user-email').value.trim();
+                    if (!email || !validateEmail(email)) {
+                        return;
                     }
 
-                    setTimeout(() => {
-                        window.close();
-                    }, 2000);
-                }
-            } catch (error) {
-                console.error('Status check failed:', error);
-            }
-        }
+                    const response = await fetch(
+                        `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
+                    );
 
-        // PayPal Integration
-        function initPayPalButtons() {
-            if (typeof paypal !== 'undefined') {
-                paypal.Buttons({
-                    style: {
-                        layout: 'vertical',
-                        color: 'gold',
-                        shape: 'rect',
-                        label: 'subscribe'
-                    },
+                    const data = await response.json();
 
-                    createSubscription: function (data, actions) {
-                        const email = document.getElementById('user-email').value.trim();
-                        if (!email || !validateEmail(email)) {
-                            showStatus('Please enter a valid email address', 'error');
-                            return Promise.reject(new Error('Invalid email'));
+                    if (data.isPro) {
+                        showStatus('✓ You already have an active PRO subscription!', 'success');
+
+                        // Notify extension if connected
+                        if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                            try {
+                                chrome.runtime.sendMessage(extensionId, {
+                                    action: 'UPDATE_PRO_STATUS',
+                                    isPro: true,
+                                    email: email,
+                                    expiryDate: data.expiryDate
+                                });
+                            } catch (e) {
+                                console.log('Could not notify extension:', e);
+                            }
                         }
 
-                        localStorage.setItem('pro_email', email);
-                        userEmail = email;
+                        setTimeout(() => {
+                            window.close();
+                        }, 2000);
+                    }
+                } catch (error) {
+                    console.error('Status check failed:', error);
+                }
+            }
 
-                        showStatus('Creating subscription...', 'loading');
+            // PayPal Integration
+            function initPayPalButtons() {
+                if (typeof paypal !== 'undefined') {
+                    paypal.Buttons({
+                        style: {
+                            layout: 'vertical',
+                            color: 'gold',
+                            shape: 'rect',
+                            label: 'subscribe'
+                        },
 
-                        return actions.subscription.create({
-                            'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
-                            'application_context': {
-                                'shipping_preference': 'NO_SHIPPING',
-                                'user_action': 'SUBSCRIBE_NOW'
-                            },
-                            'custom_id': JSON.stringify({
-                                userId: extensionUserId,
-                                email: userEmail
-                            })
-                        });
-                    },
-
-                    onApprove: async function (data, actions) {
-                        showStatus('Processing payment...', 'loading');
-
-                        try {
-                            const subscriptionData = {
-                                subscriptionID: data.subscriptionID,
-                                orderID: data.orderID,
-                                userId: extensionUserId,
-                                email: userEmail,
-                                timestamp: new Date().toISOString()
-                            };
-
-                            await fetch(GOOGLE_SCRIPT_URL, {
-                                method: 'POST',
-                                mode: 'no-cors',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    action: 'record_subscription',
-                                    data: subscriptionData
-                                })
-                            });
-
-                            // Notify extension
-                            if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                                try {
-                                    chrome.runtime.sendMessage(extensionId, {
-                                        action: 'UPDATE_PRO_STATUS',
-                                        isPro: true,
-                                        email: userEmail,
-                                        subscriptionId: data.subscriptionID,
-                                        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                                    });
-                                } catch (e) {
-                                    console.log('Could not notify extension:', e);
-                                }
+                        createSubscription: function (data, actions) {
+                            const email = document.getElementById('user-email').value.trim();
+                            if (!email || !validateEmail(email)) {
+                                showStatus('Please enter a valid email address', 'error');
+                                return Promise.reject(new Error('Invalid email'));
                             }
 
-                            showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
+                            localStorage.setItem('pro_email', email);
+                            userEmail = email;
 
-                            setTimeout(() => {
-                                window.close();
-                            }, 3000);
+                            showStatus('Creating subscription...', 'loading');
 
-                        } catch (error) {
-                            console.error('Subscription recording failed:', error);
-                            showStatus('Payment successful! Check your email for confirmation.', 'success');
+                            return actions.subscription.create({
+                                'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
+                                'application_context': {
+                                    'shipping_preference': 'NO_SHIPPING',
+                                    'user_action': 'SUBSCRIBE_NOW'
+                                },
+                                'custom_id': JSON.stringify({
+                                    userId: extensionUserId,
+                                    email: userEmail
+                                })
+                            });
+                        },
+
+                        onApprove: async function (data, actions) {
+                            // Show initial success feedback
+                            showStatus('Payment authorized! Activating PRO...', 'loading');
+
+                            try {
+                                const subscriptionData = {
+                                    subscriptionID: data.subscriptionID,
+                                    orderID: data.orderID,
+                                    userId: extensionUserId,
+                                    email: userEmail,
+                                    timestamp: new Date().toISOString()
+                                };
+
+                                // Record in Google Sheets
+                                fetch(GOOGLE_SCRIPT_URL, {
+                                    method: 'POST',
+                                    mode: 'no-cors',
+                                    headers: {
+                                        'Content-Type': 'text/plain',
+                                    },
+                                    body: JSON.stringify({
+                                        action: 'record_subscription',
+                                        data: subscriptionData
+                                    })
+                                }).catch(e => console.error('Silent GAS recording failure:', e));
+
+                                // Notify extension
+                                if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+                                    try {
+                                        chrome.runtime.sendMessage(extensionId, {
+                                            action: 'UPDATE_PRO_STATUS',
+                                            isPro: true,
+                                            email: userEmail,
+                                            subscriptionId: data.subscriptionID,
+                                            expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                                        });
+                                    } catch (e) {
+                                        console.log('Could not notify extension:', e);
+                                    }
+                                }
+
+                                // Delay slightly for effect, then show success view
+                                setTimeout(() => {
+                                    document.getElementById('main-view').style.display = 'none';
+                                    document.getElementById('success-view').style.display = 'block';
+                                    window.scrollTo(0, 0);
+                                }, 1500);
+
+                            } catch (error) {
+                                console.error('OnApprove logic failed:', error);
+                                document.getElementById('main-view').style.display = 'none';
+                                document.getElementById('success-view').style.display = 'block';
+                            }
+                        },
+
+                        onError: function (err) {
+                            console.error('PayPal error:', err);
+                            showStatus('Payment failed. Please try again or contact support.', 'error');
+                        },
+
+                        onCancel: function (data) {
+                            showStatus('Payment cancelled. You can try again anytime.', 'error');
                         }
-                    },
 
-                    onError: function (err) {
-                        console.error('PayPal error:', err);
-                        showStatus('Payment failed. Please try again or contact support.', 'error');
-                    },
-
-                    onCancel: function (data) {
-                        showStatus('Payment cancelled. You can try again anytime.', 'error');
-                    }
-
-                }).render('#paypal-button-container');
-            } else {
-                document.getElementById('paypal-button-container').innerHTML =
-                    '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+                    }).render('#paypal-button-container');
+                } else {
+                    document.getElementById('paypal-button-container').innerHTML =
+                        '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+                }
             }
-        }
-    </script>
-    </script>
+        </script>
+        </script>
 </body>
 
 </html>
