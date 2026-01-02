@@ -697,7 +697,8 @@
                     return actions.subscription.create({
                         'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
                         'application_context': {
-                            'shipping_preference': 'NO_SHIPPING'
+                            'shipping_preference': 'NO_SHIPPING',
+                            'user_action': 'SUBSCRIBE_NOW'
                         },
                         'custom_id': JSON.stringify({
                             userId: extensionUserId,
