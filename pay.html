@@ -543,221 +543,233 @@
         </div>
     </div>
 
-    <!-- PayPal SDK -->
+    <!-- PayPal SDK (Sandbox) -->
     <script
-        src="https://www.paypal.com/sdk/js?client-id=AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB&vault=true&intent=subscription"></script>
+        src="https://www.paypal.com/sdk/js?client-id=Afqjkygts7Lc6vSh9Flnjwxq-it1d_8juDx0p8XV-ABuzI1NS12j0ZNCHidgjiLmKILm5MWAlya8w0EN&vault=true&intent=subscription"></script>
 
     <!-- Pro Page Logic for Hosted Version -->
-    <script>
-        // PayPal Production Credentials
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
+    // PayPal Configuration
+    const PAYPAL_CONFIG = {
+    isSandbox: true, // SET TO false FOR PRODUCTION
+    clientIds: {
+    sandbox: 'Afqjkygts7Lc6vSh9Flnjwxq-it1d_8juDx0p8XV-ABuzI1NS12j0ZNCHidgjiLmKILm5MWAlya8w0EN',
+    live: 'AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB'
+    },
+    planIds: {
+    sandbox: 'P-3VB288152L6027506NFGODOY', // IMPORTANT: Replace with your Sandbox Plan ID
+    live: 'P-3VB288152L6027506NFGODOY'
+    }
+    };
 
-        // Get extension ID from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const extensionId = urlParams.get('extId');
-        let userEmail = '';
-        let extensionUserId = '';
+    const GOOGLE_SCRIPT_URL =
+    'https://script.google.com/macros/s/AKfycbzMYDqlYGOn2Lsz-BrKqQP0NfWTiTD0_fgoR-J0xXikY0QApMNvp1I_JVSgIpdI9U6G_g/exec';
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Get user data from extension (if available)
-            if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                try {
-                    const response = await chrome.runtime.sendMessage(extensionId, { action: 'GET_USER_DATA' });
-                    if (response) {
-                        extensionUserId = response.userId;
-                        userEmail = response.email || '';
-                        if (userEmail) {
-                            document.getElementById('user-email').value = userEmail;
-                            checkProStatus();
-                        }
-                    }
-                } catch (e) {
-                    console.log('Could not connect to extension:', e);
-                }
-            }
+    // Get extension ID from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const extensionId = urlParams.get('extId');
+    let userEmail = '';
+    let extensionUserId = '';
 
-            // If no ext connection, generate local ID
-            if (!extensionUserId) {
-                extensionUserId = localStorage.getItem('temp_user_id') || generateUserId();
-                localStorage.setItem('temp_user_id', extensionUserId);
-            }
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+    // Get user data from extension (if available)
+    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+    try {
+    const response = await chrome.runtime.sendMessage(extensionId, { action: 'GET_USER_DATA' });
+    if (response) {
+    extensionUserId = response.userId;
+    userEmail = response.email || '';
+    if (userEmail) {
+    document.getElementById('user-email').value = userEmail;
+    checkProStatus();
+    }
+    }
+    } catch (e) {
+    console.log('Could not connect to extension:', e);
+    }
+    }
 
-            // Email input listener
-            document.getElementById('user-email').addEventListener('change', (e) => {
-                userEmail = e.target.value.trim();
-                if (validateEmail(userEmail)) {
-                    localStorage.setItem('pro_email', userEmail);
-                }
-            });
+    // If no ext connection, generate local ID
+    if (!extensionUserId) {
+    extensionUserId = localStorage.getItem('temp_user_id') || generateUserId();
+    localStorage.setItem('temp_user_id', extensionUserId);
+    }
 
-            // Auto-check on page load if email exists
-            const savedEmail = localStorage.getItem('pro_email');
-            if (savedEmail) {
-                document.getElementById('user-email').value = savedEmail;
-                checkProStatus();
-            }
-        });
+    // Email input listener
+    document.getElementById('user-email').addEventListener('change', (e) => {
+    userEmail = e.target.value.trim();
+    if (validateEmail(userEmail)) {
+    localStorage.setItem('pro_email', userEmail);
+    }
+    });
 
-        function generateUserId() {
-            return 'web_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-        }
+    // Auto-check on page load if email exists
+    const savedEmail = localStorage.getItem('pro_email');
+    if (savedEmail) {
+    document.getElementById('user-email').value = savedEmail;
+    checkProStatus();
+    }
+    });
 
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
+    function generateUserId() {
+    return 'web_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+    }
 
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = message;
-            statusEl.className = `status-message ${type}`;
-            statusEl.style.display = 'block';
+    function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusEl.style.display = 'none';
-                }, 5000);
-            }
-        }
+    function showStatus(message, type) {
+    const statusEl = document.getElementById('status-message');
+    statusEl.textContent = message;
+    statusEl.className = `status-message ${type}`;
+    statusEl.style.display = 'block';
 
-        async function checkProStatus() {
-            try {
-                const email = document.getElementById('user-email').value.trim();
-                if (!email || !validateEmail(email)) {
-                    return;
-                }
+    if (type === 'success') {
+    setTimeout(() => {
+    statusEl.style.display = 'none';
+    }, 5000);
+    }
+    }
 
-                const response = await fetch(
-                    `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
-                );
+    async function checkProStatus() {
+    try {
+    const email = document.getElementById('user-email').value.trim();
+    if (!email || !validateEmail(email)) {
+    return;
+    }
 
-                const data = await response.json();
+    const response = await fetch(
+    `${GOOGLE_SCRIPT_URL}?action=check_status&email=${encodeURIComponent(email)}`
+    );
 
-                if (data.isPro) {
-                    showStatus('✓ You already have an active PRO subscription!', 'success');
+    const data = await response.json();
 
-                    // Notify extension if connected
-                    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                        try {
-                            chrome.runtime.sendMessage(extensionId, {
-                                action: 'UPDATE_PRO_STATUS',
-                                isPro: true,
-                                email: email,
-                                expiryDate: data.expiryDate
-                            });
-                        } catch (e) {
-                            console.log('Could not notify extension:', e);
-                        }
-                    }
+    if (data.isPro) {
+    showStatus('✓ You already have an active PRO subscription!', 'success');
 
-                    setTimeout(() => {
-                        window.close();
-                    }, 2000);
-                }
-            } catch (error) {
-                console.error('Status check failed:', error);
-            }
-        }
+    // Notify extension if connected
+    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+    try {
+    chrome.runtime.sendMessage(extensionId, {
+    action: 'UPDATE_PRO_STATUS',
+    isPro: true,
+    email: email,
+    expiryDate: data.expiryDate
+    });
+    } catch (e) {
+    console.log('Could not notify extension:', e);
+    }
+    }
 
-        // PayPal Integration
-        if (typeof paypal !== 'undefined') {
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'gold',
-                    shape: 'rect',
-                    label: 'subscribe'
-                },
+    setTimeout(() => {
+    window.close();
+    }, 2000);
+    }
+    } catch (error) {
+    console.error('Status check failed:', error);
+    }
+    }
 
-                createSubscription: function (data, actions) {
-                    const email = document.getElementById('user-email').value.trim();
-                    if (!email || !validateEmail(email)) {
-                        showStatus('Please enter a valid email address', 'error');
-                        return Promise.reject(new Error('Invalid email'));
-                    }
+    // PayPal Integration
+    if (typeof paypal !== 'undefined') {
+    paypal.Buttons({
+    style: {
+    layout: 'vertical',
+    color: 'gold',
+    shape: 'rect',
+    label: 'subscribe'
+    },
 
-                    localStorage.setItem('pro_email', email);
-                    userEmail = email;
+    createSubscription: function (data, actions) {
+    const email = document.getElementById('user-email').value.trim();
+    if (!email || !validateEmail(email)) {
+    showStatus('Please enter a valid email address', 'error');
+    return Promise.reject(new Error('Invalid email'));
+    }
 
-                    showStatus('Creating subscription...', 'loading');
+    localStorage.setItem('pro_email', email);
+    userEmail = email;
 
-                    return actions.subscription.create({
-                        'plan_id': 'P-3VB288152L6027506NFGODOY',
-                        'application_context': {
-                            'shipping_preference': 'NO_SHIPPING'
-                        },
-                        'custom_id': JSON.stringify({
-                            userId: extensionUserId,
-                            email: userEmail
-                        })
-                    });
-                },
+    showStatus('Creating subscription...', 'loading');
 
-                onApprove: async function (data, actions) {
-                    showStatus('Processing payment...', 'loading');
+    return actions.subscription.create({
+    'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
+    'application_context': {
+    'shipping_preference': 'NO_SHIPPING'
+    },
+    'custom_id': JSON.stringify({
+    userId: extensionUserId,
+    email: userEmail
+    })
+    });
+    },
 
-                    try {
-                        const subscriptionData = {
-                            subscriptionID: data.subscriptionID,
-                            orderID: data.orderID,
-                            userId: extensionUserId,
-                            email: userEmail,
-                            timestamp: new Date().toISOString()
-                        };
+    onApprove: async function (data, actions) {
+    showStatus('Processing payment...', 'loading');
 
-                        await fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'record_subscription',
-                                data: subscriptionData
-                            })
-                        });
+    try {
+    const subscriptionData = {
+    subscriptionID: data.subscriptionID,
+    orderID: data.orderID,
+    userId: extensionUserId,
+    email: userEmail,
+    timestamp: new Date().toISOString()
+    };
 
-                        // Notify extension
-                        if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
-                            try {
-                                chrome.runtime.sendMessage(extensionId, {
-                                    action: 'UPDATE_PRO_STATUS',
-                                    isPro: true,
-                                    email: userEmail,
-                                    subscriptionId: data.subscriptionID,
-                                    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                                });
-                            } catch (e) {
-                                console.log('Could not notify extension:', e);
-                            }
-                        }
+    await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+    'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+    action: 'record_subscription',
+    data: subscriptionData
+    })
+    });
 
-                        showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
+    // Notify extension
+    if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
+    try {
+    chrome.runtime.sendMessage(extensionId, {
+    action: 'UPDATE_PRO_STATUS',
+    isPro: true,
+    email: userEmail,
+    subscriptionId: data.subscriptionID,
+    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+    });
+    } catch (e) {
+    console.log('Could not notify extension:', e);
+    }
+    }
 
-                        setTimeout(() => {
-                            window.close();
-                        }, 3000);
+    showStatus('🎉 Success! Your PRO subscription is now active!', 'success');
 
-                    } catch (error) {
-                        console.error('Subscription recording failed:', error);
-                        showStatus('Payment successful! Check your email for confirmation.', 'success');
-                    }
-                },
+    setTimeout(() => {
+    window.close();
+    }, 3000);
 
-                onError: function (err) {
-                    console.error('PayPal error:', err);
-                    showStatus('Payment failed. Please try again or contact support.', 'error');
-                },
+    } catch (error) {
+    console.error('Subscription recording failed:', error);
+    showStatus('Payment successful! Check your email for confirmation.', 'success');
+    }
+    },
 
-                onCancel: function (data) {
-                    showStatus('Payment cancelled. You can try again anytime.', 'error');
-                }
+    onError: function (err) {
+    console.error('PayPal error:', err);
+    showStatus('Payment failed. Please try again or contact support.', 'error');
+    },
 
-            }).render('#paypal-button-container');
-        } else {
-            document.getElementById('paypal-button-container').innerHTML =
-                '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
-        }
+    onCancel: function (data) {
+    showStatus('Payment cancelled. You can try again anytime.', 'error');
+    }
+
+    }).render('#paypal-button-container');
+    } else {
+    document.getElementById('paypal-button-container').innerHTML =
+    '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
+    }
     </script>
 </body>
 
