@@ -1,158 +1,118 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncPlay - Reward Verification</title>
-    
-    <!-- Ad Script -->
-    <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
-    
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            background-color: #0d0d0d;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+const S_KEY = "v_sync_data";
+const SALT = 7391;
+
+const encodeData = (obj) => btoa(JSON.stringify(obj));
+const decodeData = (str) => {
+    try { return JSON.parse(atob(str)); } catch (e) { return null; }
+};
+
+function generateCheck(count, date) {
+    const raw = `${count}|${date}|${SALT}`;
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+        hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+        hash |= 0;
+    }
+    return (hash >>> 0).toString(36);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isVerified = urlParams.get('verified') === 'true';
+    const extensionId = urlParams.get('extId'); // Dynamic ID from URL
+    const isExternal = window.location.protocol === 'https:';
+
+    const verifyView = document.getElementById('verify-view');
+    const successView = document.getElementById('success-view');
+    const progressBar = document.getElementById('progress-bar');
+    const statusText = document.getElementById('status-text');
+    const errorText = document.getElementById('error-text');
+    const retryLink = document.getElementById('retry-link');
+
+    // Helper to send message to extension (Internal or External)
+    function sendMessage(msg, callback) {
+        if (isExternal && extensionId) {
+            chrome.runtime.sendMessage(extensionId, msg, callback);
+        } else {
+            chrome.runtime.sendMessage(msg, callback);
         }
-        .card {
-            background: #161616;
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #2a2a2a;
-            transition: all 0.5s ease;
+    }
+
+    // Validation Function - Safe for websites
+    async function checkTabAlive() {
+        if (isExternal) return true; // Can't check tabs from website, skip safety check
+
+        try {
+            const response = await new Promise(resolve => {
+                chrome.runtime.sendMessage({ action: 'GET_LAST_AD_TAB' }, resolve);
+            });
+            const adTabId = response ? response.tabId : null;
+            if (!adTabId) return false;
+            const tab = await chrome.tabs.get(adTabId);
+            return !!tab;
+        } catch (e) { return false; }
+    }
+
+    // Path 1: Already verified (from GitHub direct link)
+    if (isVerified) {
+        grantReward();
+        return;
+    }
+
+    // Path 2: Countdown Verification
+    let timeLeft = 5;
+    const totalTime = 5;
+
+    const interval = setInterval(async () => {
+        timeLeft -= 0.1;
+        const progress = Math.min(100, ((totalTime - timeLeft) / totalTime) * 100);
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        if (statusText) statusText.textContent = `Verifying... ${Math.ceil(timeLeft)}s`;
+
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            grantReward();
         }
-        .icon { font-size: 3.5rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
-        h2 { margin: 10px 0; font-size: 1.6rem; letter-spacing: -0.5px; }
-        p { color: #888; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
-        
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            font-size: 1.1rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            color: white;
-            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
-        }
-        .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(108, 92, 231, 0.4); }
-        
-        #status-msg { margin-top: 20px; font-weight: 600; min-height: 30px; }
-        .timer-text { color: #bb86fc; font-family: monospace; font-size: 1.2rem; }
-        .error-text { color: #ff5252; background: rgba(255, 82, 82, 0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
-        .success-text { color: #00f2fe; }
+    }, 100);
 
-        .celebrate { transform: scale(1.2); color: #00f2fe; }
-    </style>
-</head>
-<body>
-
-    <div class="card" id="main-card">
-        <div id="icon-box" class="icon">🎁</div>
-        <h2 id="title">Unlock Your Room</h2>
-        <p id="desc">
-            You are viewing this page to unlock a room.<br>
-            Watch a short ad to get <strong>one extra room creation for today</strong>.
-        </p>
-
-        <button id="ad-btn" class="btn">Watch Ad & Unlock Reward</button>
-
-        <div id="status-msg"></div>
-    </div>
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const extId = urlParams.get('extId');
-        
-        const adBtn = document.getElementById('ad-btn');
-        const statusMsg = document.getElementById('status-msg');
-        const iconBox = document.getElementById('icon-box');
-        const adUrl = "https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16";
-
-        let adWindow = null;
-        let timeLeft = 5;
-        let monitorInterval = null;
-
-        adBtn.addEventListener('click', () => {
-            adWindow = window.open(adUrl, '_blank');
-
-            if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
-                statusMsg.innerHTML = '<div class="error-text">Popup blocked. Please allow popups to continue.</div>';
-                return;
-            }
-
-            adBtn.style.display = 'none';
-            statusMsg.innerHTML = `Verifying ad view: <span class="timer-text">${timeLeft}s</span>`;
-            
-            startMonitoring();
-        });
-
-        function startMonitoring() {
-            if (monitorInterval) clearInterval(monitorInterval);
-
-            monitorInterval = setInterval(() => {
-                if (!adWindow || adWindow.closed) {
-                    clearInterval(monitorInterval);
-                    statusMsg.innerHTML = '<div class="error-text">Verification failed. The ad was closed too early.</div>';
-                    adBtn.style.display = 'block';
-                    adBtn.textContent = 'Try Again';
-                    timeLeft = 5;
-                    return;
+    function grantReward() {
+        if (isExternal) {
+            // WE ARE ON GITHUB: Send message to extension
+            sendMessage({ action: 'AD_COMPLETED' }, (response) => {
+                if (chrome.runtime.lastError) {
+                    failVerification("Connection failed. Please ensure the extension is active.");
+                } else if (response && response.success) {
+                    showSuccess();
                 }
-
-                timeLeft--;
-                if (timeLeft > 0) {
-                    statusMsg.innerHTML = `Verifying ad view: <span class="timer-text">${timeLeft}s</span>`;
-                } else {
-                    clearInterval(monitorInterval);
-                    grantReward();
-                }
-            }, 1000);
+            });
+        } else {
+            // WE ARE INTERNAL: Update storage directly
+            const today = new Date().toISOString().slice(0, 10);
+            chrome.storage.local.get([S_KEY], (data) => {
+                let encoded = data[S_KEY];
+                let session = decodeData(encoded) || { c: 0, d: today, r: false, h: generateCheck(0, today) };
+                session.r = true;
+                session.h = generateCheck(session.c, session.d);
+                chrome.storage.local.set({ [S_KEY]: encodeData(session) }, showSuccess);
+            });
         }
+    }
 
-        function grantReward() {
-            if (!extId) {
-                statusMsg.innerHTML = '<div class="error-text">Verification error. Please open this page from the extension.</div>';
-                return;
-            }
+    function showSuccess() {
+        if (verifyView) verifyView.style.display = 'none';
+        if (successView) successView.style.display = 'block';
+        setTimeout(() => {
+            if (!isExternal) window.close();
+            else if (statusText) statusText.textContent = "Verified! You can return to the extension.";
+        }, 3000);
+    }
 
-            statusMsg.innerHTML = '<span class="success-text">Ad verified! Unlocking your reward...</span>';
-            
-            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-                chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, () => {
-                    updateUIToSuccess();
-                });
-            } else {
-                updateUIToSuccess();
-            }
+    function failVerification(message) {
+        if (statusText) statusText.style.display = 'none';
+        if (errorText) {
+            errorText.textContent = message;
+            errorText.style.display = 'block';
         }
-
-        function updateUIToSuccess() {
-            iconBox.innerHTML = "✅";
-            iconBox.classList.add('celebrate');
-            document.getElementById('title').textContent = "Reward Unlocked!";
-            document.getElementById('desc').textContent =
-                "You can now create one extra room today. This window will close automatically.";
-            statusMsg.innerHTML = "";
-
-            setTimeout(() => {
-                window.close();
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+        if (retryLink) retryLink.style.display = 'inline';
+    }
+});
