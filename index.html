@@ -1,145 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SyncPlay - Unlock Reward</title>
+    <title>SyncPlay - Reward Verification</title>
     
-    <!-- Ad Script (Original) -->
+    <!-- Ad Script -->
     <script data-cfasync="false" src="//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1232573"></script>
     
     <style>
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: #0a0a0a;
-            color: #fff;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: #0d0d0d;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .card {
-            background: #121212;
-            padding: 3rem;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            max-width: 420px;
-            text-align: center;
-            border: 1px solid #1f1f1f;
-            position: relative;
-        }
-        .icon { font-size: 4rem; margin-bottom: 1.5rem; }
-        h1 { font-size: 1.8rem; margin: 0 0 10px; background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { color: #aaa; margin-bottom: 2.5rem; line-height: 1.6; }
-        .btn {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: #000;
-            border: none;
-            padding: 18px 40px;
-            border-radius: 15px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            cursor: pointer;
+            background: #161616;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             width: 100%;
-            transition: all 0.3s;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #2a2a2a;
+            transition: all 0.5s ease;
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(79, 172, 254, 0.4); }
-        .btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
-        #status { margin-top: 25px; font-weight: 500; min-height: 24px; color: #4facfe; }
-        .timer { font-family: monospace; font-size: 1.3rem; font-weight: bold; }
-        .error { color: #ff5252; background: rgba(255,82,82,0.1); padding: 12px; border-radius: 10px; font-size: 0.9rem; margin-top: 15px; }
+        .icon { font-size: 3.5rem; margin-bottom: 1rem; transition: transform 0.3s ease; }
+        h2 { margin: 10px 0; font-size: 1.6rem; letter-spacing: -0.5px; }
+        p { color: #888; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
+        
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+        }
+        .btn:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(108, 92, 231, 0.4); }
+        
+        #status-msg { margin-top: 20px; font-weight: 600; min-height: 30px; }
+        .timer-text { color: #bb86fc; font-family: monospace; font-size: 1.2rem; }
+        .error-text { color: #ff5252; background: rgba(255, 82, 82, 0.1); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+        .success-text { color: #00f2fe; }
+
+        .celebrate { transform: scale(1.2); color: #00f2fe; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="icon" id="icon">⚡</div>
-        <h1 id="title">Unlock Your Reward</h1>
-        <p id="desc">Watch a short ad to unlock one extra room creation for today. Your progress is verified automatically.</p>
+    <div class="card" id="main-card">
+        <div id="icon-box" class="icon">🎁</div>
+        <h2 id="title">Unlock Your Room</h2>
+        <p id="desc">
+            You are viewing this page to unlock a room.<br>
+            Watch a short ad to get <strong>one extra room creation for today</strong>.
+        </p>
 
-        <button id="ad-btn" class="btn">Watch Ad & Unlock</button>
-        <div id="status">Ready to verify...</div>
+        <button id="ad-btn" class="btn">Watch Ad & Unlock Reward</button>
+
+        <div id="status-msg"></div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const extId = params.get('extId');
+        const urlParams = new URLSearchParams(window.location.search);
+        const extId = urlParams.get('extId');
+        
         const adBtn = document.getElementById('ad-btn');
-        const status = document.getElementById('status');
+        const statusMsg = document.getElementById('status-msg');
+        const iconBox = document.getElementById('icon-box');
         const adUrl = "https://fibredelivery.com/aptk9jxjr?key=f4f39c9527ce233e6591af2452fadf16";
 
-        // 1. Initial Check: Is extension reachable?
-        window.addEventListener('load', () => {
-            if (!extId) {
-                showError("Invalid link. Please open this from the SyncPlay extension.");
-                adBtn.disabled = true;
-                return;
-            }
-            
-            // Ping extension to confirm connection
-            chrome.runtime.sendMessage(extId, { action: 'PING' }, (resp) => {
-                if (chrome.runtime.lastError) {
-                    showError("Cannot connect to extension. Please ensure SyncPlay is installed and enabled.");
-                    adBtn.disabled = true;
-                }
-            });
-        });
+        let adWindow = null;
+        let timeLeft = 5;
+        let monitorInterval = null;
 
         adBtn.addEventListener('click', () => {
-            const win = window.open(adUrl, '_blank');
-            if (!win) {
-                showError("Popup blocked! Please allow popups for this site and try again.");
+            adWindow = window.open(adUrl, '_blank');
+
+            if (!adWindow || adWindow.closed || typeof adWindow.closed === 'undefined') {
+                statusMsg.innerHTML = '<div class="error-text">Popup blocked. Please allow popups to continue.</div>';
                 return;
             }
 
-            adBtn.disabled = true;
-            let sec = 5;
-            status.innerHTML = `Verifying ad view: <span class="timer">${sec}s</span>`;
+            adBtn.style.display = 'none';
+            statusMsg.innerHTML = `Verifying ad view: <span class="timer-text">${timeLeft}s</span>`;
+            
+            startMonitoring();
+        });
 
-            const timer = setInterval(() => {
-                if (win.closed) {
-                    clearInterval(timer);
-                    showError("Ad window closed too early. Please watch the full ad.");
-                    adBtn.disabled = false;
-                    adBtn.textContent = "Try Again";
+        function startMonitoring() {
+            if (monitorInterval) clearInterval(monitorInterval);
+
+            monitorInterval = setInterval(() => {
+                if (!adWindow || adWindow.closed) {
+                    clearInterval(monitorInterval);
+                    statusMsg.innerHTML = '<div class="error-text">Verification failed. The ad was closed too early.</div>';
+                    adBtn.style.display = 'block';
+                    adBtn.textContent = 'Try Again';
+                    timeLeft = 5;
                     return;
                 }
 
-                sec--;
-                if (sec > 0) {
-                    status.innerHTML = `Verifying ad view: <span class="timer">${sec}s</span>`;
+                timeLeft--;
+                if (timeLeft > 0) {
+                    statusMsg.innerHTML = `Verifying ad view: <span class="timer-text">${timeLeft}s</span>`;
                 } else {
-                    clearInterval(timer);
+                    clearInterval(monitorInterval);
                     grantReward();
                 }
             }, 1000);
-        });
+        }
 
         function grantReward() {
-            status.textContent = "Unlocking reward...";
+            if (!extId) {
+                statusMsg.innerHTML = '<div class="error-text">Verification error. Please open this page from the extension.</div>';
+                return;
+            }
+
+            statusMsg.innerHTML = '<span class="success-text">Ad verified! Unlocking your reward...</span>';
             
-            chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, (resp) => {
-                if (chrome.runtime.lastError || !resp || !resp.success) {
-                    showError("Verification failed. Please try again.");
-                    adBtn.disabled = false;
-                } else {
-                    showSuccess();
-                }
-            });
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+                chrome.runtime.sendMessage(extId, { action: 'AD_COMPLETED' }, () => {
+                    updateUIToSuccess();
+                });
+            } else {
+                updateUIToSuccess();
+            }
         }
 
-        function showSuccess() {
-            document.getElementById('icon').textContent = "✅";
-            document.getElementById('title').textContent = "Reward Granted!";
-            document.getElementById('desc').textContent = "Your extra room is now available. You can close this window.";
-            status.textContent = "";
-            adBtn.style.display = "none";
-            setTimeout(() => window.close(), 4000);
-        }
+        function updateUIToSuccess() {
+            iconBox.innerHTML = "✅";
+            iconBox.classList.add('celebrate');
+            document.getElementById('title').textContent = "Reward Unlocked!";
+            document.getElementById('desc').textContent =
+                "You can now create one extra room today. This window will close automatically.";
+            statusMsg.innerHTML = "";
 
-        function showError(msg) {
-            status.innerHTML = `<div class="error">${msg}</div>`;
+            setTimeout(() => {
+                window.close();
+            }, 3000);
         }
     </script>
 </body>
