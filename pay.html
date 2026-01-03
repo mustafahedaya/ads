@@ -10,7 +10,7 @@
     <script>
         // Standalone Supabase Client for Payment Page
         const SUPABASE_URL = "https://stkkhjisgnzpwmsomjvx.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fsTxcW9vKRnmfpvKkmUohQ_23YzSRi8";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0a2toamlzZ256cHdtc29tanZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5NjU2MTYsImV4cCI6MjA4MjU0MTYxNn0.ANQr5h_lUMB8pJ-kysHwsQPxI9lru5ifHKqPwfb334I";
 
         const supabase = {
             async call(table, method, body = null, query = 'select=*') {
@@ -782,9 +782,18 @@
                         },
 
                         createSubscription: function (data, actions) {
-                            const email = document.getElementById('user-email').value.trim();
-                            if (!email || !validateEmail(email)) {
-                                showStatus('Please enter a valid email address', 'error');
+                            const emailInput = document.getElementById('user-email');
+                            const email = emailInput.value.trim();
+
+                            if (!email) {
+                                showStatus('Please enter your email address here to continue.', 'error');
+                                emailInput.focus();
+                                return Promise.reject(new Error('Email is required'));
+                            }
+
+                            if (!validateEmail(email)) {
+                                showStatus('Please enter a valid email address.', 'error');
+                                emailInput.focus();
                                 return Promise.reject(new Error('Invalid email'));
                             }
 
