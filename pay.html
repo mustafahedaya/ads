@@ -13,31 +13,29 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0a2toamlzZ256cHdtc29tanZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5NjU2MTYsImV4cCI6MjA4MjU0MTYxNn0.ANQr5h_lUMB8pJ-kysHwsQPxI9lru5ifHKqPwfb334I";
 
         const supabase = {
-            async call(table, method, body = null, query = 'select=*') {
-                const url = `${SUPABASE_URL}/rest/v1/${table}?${query}`;
+            async rpc(funcName, params) {
+                const url = `${SUPABASE_URL}/rest/v1/rpc/${funcName}`;
                 const options = {
-                    method: method,
+                    method: 'POST',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify(params)
                 };
-                if (method === 'POST' || method === 'PATCH') options.headers['Prefer'] = 'return=representation';
-                if (body) options.body = JSON.stringify(body);
-
                 try {
                     const response = await fetch(url, options);
-                    return await response.json();
+                    return await response.json().catch(() => null);
                 } catch (error) {
-                    console.error(`Supabase Error [${table}]:`, error);
+                    console.error(`Supabase RPC Error [${funcName}]:`, error);
                     return null;
                 }
             },
 
             async checkSubscription(email) {
                 if (!email) return { isPro: false };
-                const results = await this.call('subscriptions', 'GET', null, `email=eq.${encodeURIComponent(email)}&status=eq.active&order=end_date.desc&limit=1`);
+                const results = await this.rpc('get_active_subscription', { user_email: email });
                 if (results && results.length > 0) {
                     const sub = results[0];
                     const now = new Date();
@@ -52,7 +50,7 @@
                 const endDate = new Date(startDate);
                 endDate.setDate(endDate.getDate() + 30);
 
-                const payload = {
+                const subData = {
                     user_id: data.userId,
                     email: data.email,
                     subscription_id: data.subscriptionID,
@@ -61,10 +59,9 @@
                     end_date: endDate.toISOString(),
                     is_sandbox: data.isSandbox === true || data.isSandbox === 'true',
                     amount: 4.99,
-                    currency: 'USD',
-                    last_verified: new Date().toISOString()
+                    currency: 'USD'
                 };
-                return this.call('subscriptions', 'POST', payload);
+                return this.rpc('record_subscription_rpc', { sub_data: subData });
             }
         };
     </script>
@@ -195,8 +192,8 @@
         /* Features Grid */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
             margin-bottom: 60px;
             animation: fadeInUp 0.8s ease 0.2s both;
         }
@@ -542,8 +539,7 @@
                 <div class="hero-badge">👑 PREMIUM</div>
                 <h1>Upgrade to SyncPlay PRO</h1>
                 <p class="hero-subtitle">
-                    Create unlimited rooms daily and enjoy an ad-free experience!
-                    No more restrictions. No more interruptions.
+                    Create unlimited rooms, unlock premium aesthetics, and enjoy an ad-free experience!
                 </p>
             </div>
 
@@ -552,12 +548,22 @@
                 <div class="feature-card">
                     <span class="feature-icon">🚀</span>
                     <h3>Unlimited Rooms</h3>
-                    <p>Create unlimited sync rooms daily without any restrictions. No more 3-rooms limit!</p>
+                    <p>Create as many rooms as you want daily. Perfect for movie marathons!</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">�</span>
-                    <h3>Ad-Free Experience</h3>
-                    <p>No more ads! Enjoy seamless video watching with your friends without interruptions.</p>
+                    <span class="feature-icon">🚫</span>
+                    <h3>Ad-Free</h3>
+                    <p>No interruptions. Watch together without having to view ads for extra rooms.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3>Premium Themes</h3>
+                    <p>Unlock Scarlet Galaxy, Neon Matrix, and all future premium design themes.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎭</span>
+                    <h3>Exclusive Avatars</h3>
+                    <p>Stand out in the chat with a set of animated and exclusive premium avatars.</p>
                 </div>
             </div>
 
@@ -575,19 +581,24 @@
                     <div class="comparison-check check-yes">Unlimited</div>
                 </div>
                 <div class="comparison-row">
-                    <div class="comparison-feature">Video Sync</div>
-                    <div class="comparison-check check-yes">✓</div>
-                    <div class="comparison-check check-yes">✓</div>
+                    <div class="comparison-feature">Ads Experience</div>
+                    <div class="comparison-check">Rewarded Ads</div>
+                    <div class="comparison-check check-yes">100% Ad-Free</div>
                 </div>
                 <div class="comparison-row">
-                    <div class="comparison-feature">Voice Chat</div>
-                    <div class="comparison-check check-yes">✓</div>
-                    <div class="comparison-check check-yes">✓</div>
+                    <div class="comparison-feature">Premium Themes</div>
+                    <div class="comparison-check check-no">Limited</div>
+                    <div class="comparison-check check-yes">All Unlocked</div>
                 </div>
                 <div class="comparison-row">
-                    <div class="comparison-feature">Ads</div>
-                    <div class="comparison-check check-yes">View ads for extra rooms</div>
-                    <div class="comparison-check check-no">Ad-Free</div>
+                    <div class="comparison-feature">Exclusive Avatars</div>
+                    <div class="comparison-check check-no">Standard</div>
+                    <div class="comparison-check check-yes">Premium Set</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Video Sync & Voice</div>
+                    <div class="comparison-check check-yes">✓</div>
+                    <div class="comparison-check check-yes">✓</div>
                 </div>
             </div>
 
@@ -600,7 +611,7 @@
                         <span class="price-period">/month</span>
                     </div>
                     <p class="price-description">
-                        Cancel anytime. No hidden fees. Instant activation.
+                        Cancel anytime. Instant activation tied to your email.
                     </p>
 
                     <!-- Email Input -->
@@ -760,10 +771,6 @@
                                 console.log('Could not notify extension:', e);
                             }
                         }
-
-                        // We show the message but DO NOT auto-close.
-                        // This allows the user to see the status and avoids frustration
-                        // if they are trying to manage their account or testing.
                     }
                 } catch (error) {
                     console.error('Status check failed:', error);
@@ -876,7 +883,6 @@
                         '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
                 }
             }
-        </script>
         </script>
 </body>
 
