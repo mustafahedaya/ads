@@ -60,7 +60,7 @@
                     start_date: startDate.toISOString(),
                     end_date: endDate.toISOString(),
                     is_sandbox: data.isSandbox === true || data.isSandbox === 'true',
-                    amount: 4.99,
+                    amount: 0.99,
                     currency: 'USD',
                     last_verified: new Date().toISOString()
                 };
@@ -527,8 +527,8 @@
         }
     </style>
     <!-- Three.js & Vanta.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="three.min.js"></script>
+    <script src="vanta.net.min.js"></script>
 </head>
 
 <body>
@@ -540,7 +540,7 @@
             <h1 style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">Payment Successful!</h1>
             <p style="font-size: 20px; color: #b0b0b0; max-width: 600px; margin: 0 auto 40px; line-height: 1.6;">
                 Your SyncPlay PRO subscription is now active.
-                You can now create unlimited rooms without using coins!
+                You can now create unlimited rooms and enjoy an ad-free experience!
             </p>
             <button onclick="window.close()"
                 style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; padding: 18px 45px; border-radius: 35px; color: #000; font-weight: 800; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); transition: transform 0.2s ease;">
@@ -554,8 +554,8 @@
                 <div class="hero-badge">👑 PREMIUM</div>
                 <h1>Upgrade to SyncPlay PRO</h1>
                 <p class="hero-subtitle">
-                    Create unlimited rooms and keep your coins.
-                    No more restrictions. No more limits.
+                    Create unlimited rooms daily and enjoy an ad-free experience!
+                    No more restrictions. No more interruptions.
                 </p>
             </div>
 
@@ -564,12 +564,12 @@
                 <div class="feature-card">
                     <span class="feature-icon">🚀</span>
                     <h3>Unlimited Rooms</h3>
-                    <p>Create unlimited sync rooms without using any coins. Bypass the monthly quota!</p>
+                    <p>Create unlimited sync rooms daily without any restrictions. No more 3-rooms limit!</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">💎</span>
-                    <h3>No Coins Needed</h3>
-                    <p>Unlock PRO and stop worrying about your coin balance. Premium is forever free of usage fees.</p>
+                    <span class="feature-icon">�</span>
+                    <h3>Ad-Free Experience</h3>
+                    <p>No more ads! Enjoy seamless video watching with your friends without interruptions.</p>
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">✨</span>
@@ -587,14 +587,9 @@
                     <div>PRO</div>
                 </div>
                 <div class="comparison-row">
-                    <div class="comparison-feature">Monthly Allowance</div>
-                    <div class="comparison-check check-no">100 Coins</div>
+                    <div class="comparison-feature">Daily Room Creation</div>
+                    <div class="comparison-check check-no">3 rooms</div>
                     <div class="comparison-check check-yes">Unlimited</div>
-                </div>
-                <div class="comparison-row">
-                    <div class="comparison-feature">Cost Per Room</div>
-                    <div class="comparison-check check-no">10 Coins</div>
-                    <div class="comparison-check check-yes">Free (∞ Coins)</div>
                 </div>
                 <div class="comparison-row">
                     <div class="comparison-feature">Video Sync</div>
@@ -615,6 +610,11 @@
                     <div class="comparison-feature">Avatars</div>
                     <div class="comparison-check check-no">Standard</div>
                     <div class="comparison-check check-yes">Exclusive Collection</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Ads</div>
+                    <div class="comparison-check check-no">View ads for extra rooms</div>
+                    <div class="comparison-check check-yes">Ad-Free</div>
                 </div>
             </div>
 
@@ -659,13 +659,13 @@
         <script>
             // PayPal Configuration
             const PAYPAL_CONFIG = {
-                isSandbox: true, // SET TO false FOR PRODUCTION
+                isSandbox: false, // SET TO false FOR PRODUCTION
                 clientIds: {
                     sandbox: 'AYQw_tuPw_U7huZLiqcN_frAKk3XlqBRFEy7-HIYIQdWMdpvRSRc5eFDHLN4b2qVtbYX3AbZPXgc1_Iu',
                     live: 'AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB'
                 },
                 planIds: {
-                    sandbox: 'P-75S77380MM398401NNFMEDPQ', // Correct US Sandbox Plan ID
+                    sandbox: 'P-75S77380MM398401NNFMEDPQ', // New US Sandbox Plan ID
                     live: 'P-3VB288152L6027506NFGODOY'
                 }
             };
@@ -814,6 +814,10 @@
                                 console.log('Could not notify extension:', e);
                             }
                         }
+
+                        // We show the message but DO NOT auto-close.
+                        // This allows the user to see the status and avoids frustration
+                        // if they are trying to manage their account or testing.
                     }
                 } catch (error) {
                     console.error('Status check failed:', error);
@@ -854,32 +858,35 @@
 
                             return actions.subscription.create({
                                 'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
-                                'custom_id': extensionUserId,
                                 'application_context': {
-                                    'shipping_preference': 'NO_SHIPPING'
-                                }
+                                    'shipping_preference': 'NO_SHIPPING',
+                                    'user_action': 'SUBSCRIBE_NOW'
+                                },
+                                'custom_id': JSON.stringify({
+                                    userId: extensionUserId,
+                                    email: userEmail
+                                })
                             });
                         },
 
                         onApprove: async function (data, actions) {
+                            // Show initial success feedback
                             showStatus('Payment authorized! Activating PRO...', 'loading');
 
-                            const subscriptionData = {
-                                subscriptionID: data.subscriptionID,
-                                orderID: data.orderID,
-                                userId: extensionUserId || 'anonymous',
-                                email: userEmail,
-                                isSandbox: PAYPAL_CONFIG.isSandbox,
-                                timestamp: new Date().toISOString()
-                            };
-
                             try {
-                                // 1. Record in Supabase (don't let this block success if it hangs)
-                                supabase.recordSubscription(subscriptionData).catch(e => {
-                                    console.error('Supabase recording failed, but continuing...', e);
-                                });
+                                const subscriptionData = {
+                                    subscriptionID: data.subscriptionID,
+                                    orderID: data.orderID,
+                                    userId: extensionUserId,
+                                    email: userEmail,
+                                    isSandbox: PAYPAL_CONFIG.isSandbox,
+                                    timestamp: new Date().toISOString()
+                                };
 
-                                // 2. Notify extension
+                                // Record in Supabase
+                                await supabase.recordSubscription(subscriptionData);
+
+                                // Notify extension
                                 if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
                                     try {
                                         chrome.runtime.sendMessage(extensionId, {
@@ -888,22 +895,21 @@
                                             email: userEmail,
                                             subscriptionId: data.subscriptionID,
                                             expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                                        }).catch(e => console.log('Message catch:', e));
+                                        });
                                     } catch (e) {
-                                        console.log('Outer Message error:', e);
+                                        console.log('Could not notify extension:', e);
                                     }
                                 }
 
-                                // 3. Show Success View immediately after small delay
+                                // Delay slightly for effect, then show success view
                                 setTimeout(() => {
                                     document.getElementById('main-view').style.display = 'none';
                                     document.getElementById('success-view').style.display = 'block';
                                     window.scrollTo(0, 0);
-                                }, 1000);
+                                }, 1500);
 
                             } catch (error) {
                                 console.error('OnApprove logic failed:', error);
-                                // Always show success anyway since the payment WAS approved by PayPal
                                 document.getElementById('main-view').style.display = 'none';
                                 document.getElementById('success-view').style.display = 'block';
                             }
@@ -924,6 +930,7 @@
                         '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
                 }
             }
+        </script>
         </script>
 </body>
 
