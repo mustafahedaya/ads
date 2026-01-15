@@ -312,6 +312,25 @@
             z-index: 1;
         }
 
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 28px;
+            margin-right: 12px;
+            font-weight: 400;
+        }
+
+        .discount-badge {
+            background: #ff4d4d;
+            color: white;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            vertical-align: middle;
+            margin-left: 10px;
+            box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+        }
+
         .price-period {
             font-size: 18px;
             color: #888;
@@ -602,10 +621,12 @@
             <!-- Pricing Section -->
             <div class="pricing-section">
                 <div class="pricing-card">
-                    <div class="popular-badge">⭐ MOST POPULAR</div>
+                    <div class="popular-badge">⭐ LIMITED TIME OFFER</div>
                     <div class="price">
-                        $4.99
+                        <span class="old-price">$4.99</span>
+                        $0.99
                         <span class="price-period">/month</span>
+                        <span class="discount-badge">-80% OFF</span>
                     </div>
                     <p class="price-description">
                         Cancel anytime. No hidden fees. Instant activation.
