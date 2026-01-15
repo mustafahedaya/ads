@@ -521,7 +521,7 @@
             <h1 style="font-size: 48px; margin-bottom: 20px; color: #FFD700;">Payment Successful!</h1>
             <p style="font-size: 20px; color: #b0b0b0; max-width: 600px; margin: 0 auto 40px; line-height: 1.6;">
                 Your SyncPlay PRO subscription is now active.
-                You can now create unlimited rooms and enjoy an ad-free experience!
+                You can now create unlimited rooms without using coins!
             </p>
             <button onclick="window.close()"
                 style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; padding: 18px 45px; border-radius: 35px; color: #000; font-weight: 800; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4); transition: transform 0.2s ease;">
@@ -535,8 +535,8 @@
                 <div class="hero-badge">👑 PREMIUM</div>
                 <h1>Upgrade to SyncPlay PRO</h1>
                 <p class="hero-subtitle">
-                    Create unlimited rooms daily and enjoy an ad-free experience!
-                    No more restrictions. No more interruptions.
+                    Create unlimited rooms and keep your coins.
+                    No more restrictions. No more limits.
                 </p>
             </div>
 
@@ -545,12 +545,12 @@
                 <div class="feature-card">
                     <span class="feature-icon">🚀</span>
                     <h3>Unlimited Rooms</h3>
-                    <p>Create unlimited sync rooms daily without any restrictions. No more 3-rooms limit!</p>
+                    <p>Create unlimited sync rooms without using any coins. Bypass the monthly quota!</p>
                 </div>
                 <div class="feature-card">
-                    <span class="feature-icon">�</span>
-                    <h3>Ad-Free Experience</h3>
-                    <p>No more ads! Enjoy seamless video watching with your friends without interruptions.</p>
+                    <span class="feature-icon">💎</span>
+                    <h3>No Coins Needed</h3>
+                    <p>Unlock PRO and stop worrying about your coin balance. Premium is forever free of usage fees.</p>
                 </div>
                 <div class="feature-card">
                     <span class="feature-icon">✨</span>
@@ -568,9 +568,14 @@
                     <div>PRO</div>
                 </div>
                 <div class="comparison-row">
-                    <div class="comparison-feature">Daily Room Creation</div>
-                    <div class="comparison-check check-no">3 rooms</div>
+                    <div class="comparison-feature">Monthly Allowance</div>
+                    <div class="comparison-check check-no">100 Coins</div>
                     <div class="comparison-check check-yes">Unlimited</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Cost Per Room</div>
+                    <div class="comparison-check check-no">10 Coins</div>
+                    <div class="comparison-check check-yes">Free (0 Coins)</div>
                 </div>
                 <div class="comparison-row">
                     <div class="comparison-feature">Video Sync</div>
@@ -591,11 +596,6 @@
                     <div class="comparison-feature">Avatars</div>
                     <div class="comparison-check check-no">Standard</div>
                     <div class="comparison-check check-yes">Exclusive Collection</div>
-                </div>
-                <div class="comparison-row">
-                    <div class="comparison-feature">Ads</div>
-                    <div class="comparison-check check-no">View ads for extra rooms</div>
-                    <div class="comparison-check check-yes">Ad-Free</div>
                 </div>
             </div>
 
@@ -638,13 +638,13 @@
         <script>
             // PayPal Configuration
             const PAYPAL_CONFIG = {
-                isSandbox: false, // SET TO false FOR PRODUCTION
+                isSandbox: true, // SET TO true FOR SANDBOX TESTING
                 clientIds: {
                     sandbox: 'AYQw_tuPw_U7huZLiqcN_frAKk3XlqBRFEy7-HIYIQdWMdpvRSRc5eFDHLN4b2qVtbYX3AbZPXgc1_Iu',
                     live: 'AQzFg_lpFPvo623ZwHMTGIdw9eCONeyugOgkd6l6n3JfuFfOB5zE4Lq-MRnDTFC536xpI5ZJzMn_3ZTB'
                 },
                 planIds: {
-                    sandbox: 'P-75S77380MM398401NNFMEDPQ', // New US Sandbox Plan ID
+                    sandbox: 'P-3VB288152L6027506NFGODOY', // Updated Plan ID
                     live: 'P-3VB288152L6027506NFGODOY'
                 }
             };
@@ -793,10 +793,6 @@
                                 console.log('Could not notify extension:', e);
                             }
                         }
-
-                        // We show the message but DO NOT auto-close.
-                        // This allows the user to see the status and avoids frustration
-                        // if they are trying to manage their account or testing.
                     }
                 } catch (error) {
                     console.error('Status check failed:', error);
@@ -837,14 +833,10 @@
 
                             return actions.subscription.create({
                                 'plan_id': PAYPAL_CONFIG.isSandbox ? PAYPAL_CONFIG.planIds.sandbox : PAYPAL_CONFIG.planIds.live,
+                                'custom_id': extensionUserId,
                                 'application_context': {
-                                    'shipping_preference': 'NO_SHIPPING',
-                                    'user_action': 'SUBSCRIBE_NOW'
-                                },
-                                'custom_id': JSON.stringify({
-                                    userId: extensionUserId,
-                                    email: userEmail
-                                })
+                                    'shipping_preference': 'NO_SHIPPING'
+                                }
                             });
                         },
 
@@ -909,7 +901,6 @@
                         '<p style="color: #cf6679;">PayPal is currently unavailable. Please refresh the page.</p>';
                 }
             }
-        </script>
         </script>
 </body>
 
