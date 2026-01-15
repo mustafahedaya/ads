@@ -841,23 +841,24 @@
                         },
 
                         onApprove: async function (data, actions) {
-                            // Show initial success feedback
                             showStatus('Payment authorized! Activating PRO...', 'loading');
 
+                            const subscriptionData = {
+                                subscriptionID: data.subscriptionID,
+                                orderID: data.orderID,
+                                userId: extensionUserId || 'anonymous',
+                                email: userEmail,
+                                isSandbox: PAYPAL_CONFIG.isSandbox,
+                                timestamp: new Date().toISOString()
+                            };
+
                             try {
-                                const subscriptionData = {
-                                    subscriptionID: data.subscriptionID,
-                                    orderID: data.orderID,
-                                    userId: extensionUserId,
-                                    email: userEmail,
-                                    isSandbox: PAYPAL_CONFIG.isSandbox,
-                                    timestamp: new Date().toISOString()
-                                };
+                                // 1. Record in Supabase (don't let this block success if it hangs)
+                                supabase.recordSubscription(subscriptionData).catch(e => {
+                                    console.error('Supabase recording failed, but continuing...', e);
+                                });
 
-                                // Record in Supabase
-                                await supabase.recordSubscription(subscriptionData);
-
-                                // Notify extension
+                                // 2. Notify extension
                                 if (extensionId && typeof chrome !== 'undefined' && chrome.runtime) {
                                     try {
                                         chrome.runtime.sendMessage(extensionId, {
@@ -866,21 +867,22 @@
                                             email: userEmail,
                                             subscriptionId: data.subscriptionID,
                                             expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                                        });
+                                        }).catch(e => console.log('Message catch:', e));
                                     } catch (e) {
-                                        console.log('Could not notify extension:', e);
+                                        console.log('Outer Message error:', e);
                                     }
                                 }
 
-                                // Delay slightly for effect, then show success view
+                                // 3. Show Success View immediately after small delay
                                 setTimeout(() => {
                                     document.getElementById('main-view').style.display = 'none';
                                     document.getElementById('success-view').style.display = 'block';
                                     window.scrollTo(0, 0);
-                                }, 1500);
+                                }, 1000);
 
                             } catch (error) {
                                 console.error('OnApprove logic failed:', error);
+                                // Always show success anyway since the payment WAS approved by PayPal
                                 document.getElementById('main-view').style.display = 'none';
                                 document.getElementById('success-view').style.display = 'block';
                             }
