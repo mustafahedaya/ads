@@ -135,13 +135,13 @@
         proBtn.href = "https://mustafahedaya.github.io/ads/pay.html" + (extId ? "?extId=" + extId : "");
 
         let adWindow = null;
-        let timeLeft = 5;
+        let timeLeft = 10;
         let monitorInterval = null;
         let checkFails = 0;
 
         adBtn.onclick = function() {
             // Reset
-            timeLeft = 5;
+            timeLeft = 10;
             checkFails = 0;
             if (monitorInterval) clearInterval(monitorInterval);
 
